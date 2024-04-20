@@ -85,3 +85,22 @@ if __name__ == "__main__":
     print(phi, lam, h)
     # phi, lam, h = geo.xyz2plh2(X, Y, Z)
     # print(phi, lam, h)
+    
+with open('wsp_inp.txt', 'r') as f:
+	lines = f.readlines()
+	lines = lines[4:]
+
+	coords_flh = []
+	for line in lines: 
+		line = line.strip()
+		x_str,y_str,z_str = line.split(',')
+		x,y,z = float(x_str),float(y_str),float(z_str)
+		f,l,h = geo.xyz2plh(x,y,z)
+		coords_flh.append([f,l,h])
+
+with open('result_xyz2flh.txt','w+') as f:
+    for i, coords in enumerate(coords_flh):
+        coords_flh_line = ','.join([str(coord) for coord in coords])
+        if i != len(coords_flh) - 1:
+            coords_flh_line += ','
+        f.write(coords_flh_line)
