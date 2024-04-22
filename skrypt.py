@@ -73,7 +73,15 @@ class Transformacje:
         else:
             raise NotImplementedError(f"{output} - output format not defined")
             
-
+    def flh2xyz(self, fi, lam, h):
+        fi = radians(fi)
+        lam = radians(lam)
+        Rn = self.a / sqrt(1 - self.ecc2 * sin(fi)**2) #piszely self.costam bo te selfy są zdefiniowane w _innit_
+        q = Rn * self.ecc2 * sin(fi)
+        x = (Rn + h) * cos(fi) * cos(lam)
+        y = (Rn + h) * cos(fi) * sin(lam)
+        z = (Rn + h) * sin(fi) - q
+        return x,y,z
 
 
 if __name__ == "__main__":
