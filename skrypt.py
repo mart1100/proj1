@@ -78,7 +78,7 @@ class Transformacje:
     def plh2xyz(self, phi, lam, h):
         phi = radians(phi)
         lam = radians(lam)
-        Rn = self.a / sqrt(1 - self.ecc2 * sin(phi)**2) #piszely self.costam bo te selfy są zdephiniowane w _innit_
+        Rn = self.a / sqrt(1 - self.ecc2 * sin(phi)**2)
         q = Rn * self.ecc2 * sin(phi)
         x = (Rn + h) * cos(phi) * cos(lam)
         y = (Rn + h) * cos(phi) * sin(lam)
@@ -90,55 +90,53 @@ if __name__ == "__main__":
     geo = Transformacje(model = "wgs84")
     print(sys.argv)
     # dane XYZ geocentryczne
-    X = 3664940.500; Y = 1409153.590; Z = 5009571.170
-    phi, lam, h = geo.xyz2plh(X, Y, Z)
-    print(phi, lam, h)
+    # X = 3664940.500; Y = 1409153.590; Z = 5009571.170
+    # phi, lam, h = geo.xyz2plh(X, Y, Z)
+    # print(phi, lam, h)
     # phi, lam, h = geo.xyz2plh2(X, Y, Z)
     # print(phi, lam, h)
-
-    # print(phi, lam, h)
+    input_file_path = sys.argv[-1]
     
-if '--xyz2plh' in sys.argv:
-    with open('wsp_inp.txt', 'r') as f:
-    	lines = f.readlines()
-    	lines = lines[4:]
+    if '--xyz2plh' in sys.argv and '--plh2xyz' in sys.argv:
+        print('Możesz podać tylko jedną flagę.')
+        
+    elif '--xyz2plh' in sys.argv:
+        with open(input_file_path, 'r') as f:
+        	lines = f.readlines()
+        	lines = lines[4:]
+        
+        	coords_plh = []
+        	for line in lines: 
+        		line = line.strip()
+        		x_str,y_str,z_str = line.split(',')
+        		x,y,z = float(x_str),float(y_str),float(z_str)
+        		p,l,h = geo.xyz2plh(x,y,z)
+        		coords_plh.append([p,l,h])
     
-    	coords_plh = []
-    	for line in lines: 
-    		line = line.strip()
-    		x_str,y_str,z_str = line.split(',')
-    		x,y,z = float(x_str),float(y_str),float(z_str)
-    		p,l,h = geo.xyz2plh(x,y,z)
-    		coords_plh.append([p,l,h])
-
-    with open('result_xyz2plh.txt','w+') as f:
-        f.write('phi[deg], lam[deg], h[m] \n')
-        for i, coords in enumerate(coords_plh):
-            coords_plh_line = ','.join([str(coord) for coord in coords])
-            if i != len(coords_plh) - 1:
-                coords_plh_line += ','
-            f.write(coords_plh_line + '\n')
-        
-        
-elif '--plh2xyz' in sys.argv:  
-        
-    with open('wsp_inp.txt', 'r') as f:
-    	lines = f.readlines()
-    	lines = lines[4:]
-        
-    coords_xyz = []
-    for line in lines: 
-        line = line.strip()
-        phi_str,lam_str,h_str = line.split(',')
-        phi, lam, h = float(phi_str),float(lam_str),float(h_str)
-        x, y, z = geo.plh2xyz(phi,lam,h)
-        coords_xyz.append([x,y,z])
-
-    with open('result_plh2xyz.txt','w+') as f:
-        f. write('x[m], y[m], z[m] \n')
-        for i, coords in enumerate(coords_xyz):
-            coords_xyz_line = ','.join([f'{coord:11.3f}' for coord in coords])
-            if i != len(coords_xyz) - 1:
-                coords_xyz_line += ','
-            f.write(coords_xyz_line + '\n')
+        with open('result_xyz2plh.txt','w+') as f:
+            f.write('phi[deg], lam[deg], h[m] \n')
+            for coords in coords_plh:
+                coords_plh_line = ','.join([str(coord) for coord in coords])
+                f.write(coords_plh_line + '\n')
+            
+            
+    elif '--plh2xyz' in sys.argv:  
+            
+        with open(input_file_path, 'r') as f:
+        	lines = f.readlines()
+        	lines = lines[4:]
+            
+        coords_xyz = []
+        for line in lines: 
+            line = line.strip()
+            phi_str,lam_str,h_str = line.split(',')
+            phi, lam, h = float(phi_str),float(lam_str),float(h_str)
+            x, y, z = geo.plh2xyz(phi,lam,h)
+            coords_xyz.append([x,y,z])
+    
+        with open('result_plh2xyz.txt','w+') as f:
+            f. write('x[m], y[m], z[m] \n')
+            for coords in coords_xyz:
+                coords_xyz_line = ','.join([f'{coord:11.3f}' for coord in coords])
+                f.write(coords_xyz_line + '\n')
 
