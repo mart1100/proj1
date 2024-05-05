@@ -15,15 +15,15 @@ class Transformacje:
         + Inne powierzchnie odniesienia: https://en.wikibooks.org/wiki/PROJ.4#Spheroid
         + Parametry planet: https://nssdc.gsfc.nasa.gov/planetary/factsheet/index.html
         """
-        if model == "wgs84":
+        if model == "wgs84" or model == "Wgs84" or model == "WGS84":
             self.a = 6378137.0 # semimajor_axis
             self.b = 6356752.31424518 # semiminor_axis
-        elif model == "grs80":
+        elif model == "grs80" or model == "Grs80" or model == "GRS80":
             self.a = 6378137.0
             self.b = 6356752.31414036
-        elif model == "mars":
-            self.a = 3396900.0
-            self.b = 3376097.80585952
+        elif model == "krasowski" or model == "Krasowski" or model == "Krassowski" or model == "krassowski" or model == "krass" or model == "Krass":
+            self.a = 6378245.0
+            self.b = 6356863.019
         else:
             raise NotImplementedError(f"{model} model not implemented")
         self.flat = (self.a - self.b) / self.a
