@@ -1,4 +1,4 @@
-from math import sin, cos, sqrt, atan, atan2, degrees, radians
+from math import sin, cos, sqrt, atan, atan2, degrees, radians, tan
 import sys
 
 o = object()
@@ -84,6 +84,49 @@ class Transformacje:
         y = (Rn + h) * cos(phi) * sin(lam)
         z = (Rn + h) * sin(phi) - q
         return x,y,z
+    
+    
+    def pl21992(self, phi, lam):
+        '''
+        Aplikacja odwzorowania Gaussa-Krugera dla układu 1992,
+        dla elipsoidy GRS-80 (WGS-84) i stałej skali zniekształceń m0 = 0.9993. 
+        Współrzędnymi wejsciowymi są współrzędne elipsoidalne (phi, lam).
+
+        Parameters
+        ----------
+        phi : FLOAT
+            [stopnie dziesiętne] - szerokosć geodezyjna
+        lam : FLOAT
+            [stopnie dziesiętne] - długosć geodezyjna
+
+        Returns
+        -------
+        x1992 : FLOAT
+            [m] - odcięta w układzie 1992
+        y1992 : FLOAT
+            [m] - rzędna w układzie 1992
+        '''
+        if self.a == 6378245.0:
+            raise NotImplementedError("pl21992 method not implemented for Krasowski model")
+        else:
+            phi = radians(phi)
+            lam = radians(lam)
+            b2 = self.a**2 * (1 - self.ecc2)
+            e_prim2 = (self.a**2 - b2) / b2
+            deltal = lam - radians(19)
+            t = tan(phi)
+            eta2 = e_prim2 * (cos(phi)**2) 
+            N = self.a / sqrt(1 - self.ecc2 * sin(phi)**2)
+            A0 = 1 - (self.ecc2 / 4) - ((3 * (self.ecc2**2)) / 64) - ((5 * (self.ecc2**3)) / 256)
+            A2 = (3 / 8) * (self.ecc2 + (self.ecc2**2) / 4 + (15 * (self.ecc2**3)) / 128)
+            A4 = (15 / 256) * (self.ecc2**2 + (3 * (self.ecc2**3)) / 4)
+            A6 = (35 * (self.ecc2**3)) / 3072
+            sigma = self.a * (A0 * phi - A2 * sin(2 * phi) + A4 * sin(4 * phi) - A6 * sin(6*phi))
+            xgk = sigma + ((deltal)**2)/2 * N * sin(phi) * cos(phi) * (1 + ((deltal)**2)/12 * (cos(phi))**2 * (5 - t**2 + 9 * eta2 + 4 * (eta2)**2) + ((deltal)**4)/360 * (cos(phi))**4 * (61 - 58*t**2 + t**4 + 270*eta2 - 330*eta2*t**2))
+            ygk = deltal * N * cos(phi) * (1 + ((deltal)**2)/6 * (cos(phi))**2 * (1 - t**2 + eta2) + ((deltal)**4)/120 * (cos(phi))**4 * (5 - 18 * t**2 + t**4 + 14 * eta2 - 58 * eta2 * t**2))
+            x1992 = xgk * 0.9993 - 5300000
+            y1992 = ygk * 0.9993 + 500000
+        return x1992, y1992
             
 if __name__ == "__main__":
     # utworzenie obiektu
