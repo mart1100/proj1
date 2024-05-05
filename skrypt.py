@@ -76,6 +76,23 @@ class Transformacje:
             
 
     def plh2xyz(self, phi, lam, h):
+        '''
+        Przeliczenie współrzędnych geodezyjnych (phi, lam, h) do współrzędnych orto-kartezjańskich (x, y, z).
+
+        Parameters
+        ----------
+        phi : FLOAT
+            [stopnie dziesiętne] - szerokosć geodezyjna
+        lam : FLOAT
+            [stopnie dziesiętne] - długosć geodezyjna
+        h : FLOAT
+            [m] - wysokosć elipsoidalna
+
+        Returns
+        -------
+        x, y, z : FLOAT
+            [m] - współrzędne w układzie orto-kartezjańskim.
+        '''
         phi = radians(phi)
         lam = radians(lam)
         Rn = self.a / sqrt(1 - self.ecc2 * sin(phi)**2)
