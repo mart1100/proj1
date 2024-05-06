@@ -1,4 +1,4 @@
-from math import sin, cos, sqrt, atan, atan2, degrees, radians
+from math import sin, cos, sqrt, atan, atan2, degrees, radians, tan
 import sys
 
 o = object()
@@ -15,20 +15,39 @@ class Transformacje:
         + Inne powierzchnie odniesienia: https://en.wikibooks.org/wiki/PROJ.4#Spheroid
         + Parametry planet: https://nssdc.gsfc.nasa.gov/planetary/factsheet/index.html
         """
-        if model == "wgs84":
+        if model == "wgs84" or model == "Wgs84" or model == "WGS84":
             self.a = 6378137.0 # semimajor_axis
             self.b = 6356752.31424518 # semiminor_axis
-        elif model == "grs80":
+        elif model == "grs80" or model == "Grs80" or model == "GRS80":
             self.a = 6378137.0
             self.b = 6356752.31414036
-        elif model == "mars":
-            self.a = 3396900.0
-            self.b = 3376097.80585952
+        elif model == "krasowski" or model == "Krasowski" or model == "Krassowski" or model == "krassowski" or model == "krass" or model == "Krass":
+            self.a = 6378245.0
+            self.b = 6356863.019
         else:
             raise NotImplementedError(f"{model} model not implemented")
         self.flat = (self.a - self.b) / self.a
         self.ecc = sqrt(2 * self.flat - self.flat ** 2) # eccentricity  WGS84:0.0818191910428 
         self.ecc2 = (2 * self.flat - self.flat ** 2) # eccentricity**2
+        
+    def deg2dms(self, deg):
+        '''
+        Funkcja zamieniająca stopnie dziesiętne na stopnie, minuty, sekundy.
+        Parameters
+        ----------
+        deg : float
+            stopnie w postaci dziesiętnej (decimal degrees)
+
+        Returns
+        -------
+        d : stopnie
+        m : minuty
+        s : sekundy
+        '''
+        d = int(deg)
+        m = int(60 * (deg - d))
+        s = (deg - d - m/60) * 3600
+        return(d,m,s)
 
 
     
@@ -70,7 +89,8 @@ class Transformacje:
         elif output == "dms":
             lat = self.deg2dms(degrees(lat))
             lon = self.deg2dms(degrees(lon))
-            return f"{lat[0]:02d}:{lat[1]:02d}:{lat[2]:.2f}", f"{lon[0]:02d}:{lon[1]:02d}:{lon[2]:.2f}", f"{h:.3f}"
+            # return f"{lat[0]:02d}:{lat[1]:02d}:{lat[2]:.2f}", f"{lon[0]:02d}:{lon[1]:02d}:{lon[2]:.2f}", f"{h:.3f}"
+            return f'{lat[0]:3d}{chr(176)}{abs(lat[1]):02d}\'{abs(lat[2]):.2f}\"', f'{lon[0]:3d}{chr(176)}{abs(lon[1]):02d}\'{abs(lon[2]):.2f}\"', f"{h:.3f}"
         else:
             raise NotImplementedError(f"{output} - output format not defined")
             
@@ -101,6 +121,49 @@ class Transformacje:
         y = (Rn + h) * cos(phi) * sin(lam)
         z = (Rn + h) * sin(phi) - q
         return x,y,z
+    
+    
+    def pl21992(self, phi, lam):
+        '''
+        Aplikacja odwzorowania Gaussa-Krugera dla układu 1992,
+        dla elipsoidy GRS-80 (WGS-84) i stałej skali zniekształceń m0 = 0.9993. 
+        Współrzędnymi wejsciowymi są współrzędne elipsoidalne (phi, lam).
+
+        Parameters
+        ----------
+        phi : FLOAT
+            [stopnie dziesiętne] - szerokosć geodezyjna
+        lam : FLOAT
+            [stopnie dziesiętne] - długosć geodezyjna
+
+        Returns
+        -------
+        x1992 : FLOAT
+            [m] - odcięta w układzie 1992
+        y1992 : FLOAT
+            [m] - rzędna w układzie 1992
+        '''
+        if self.a == 6378245.0:
+            raise NotImplementedError("pl21992 method not implemented for Krasowski model")
+        else:
+            phi = radians(phi)
+            lam = radians(lam)
+            b2 = self.a**2 * (1 - self.ecc2)
+            e_prim2 = (self.a**2 - b2) / b2
+            deltal = lam - radians(19)
+            t = tan(phi)
+            eta2 = e_prim2 * (cos(phi)**2) 
+            N = self.a / sqrt(1 - self.ecc2 * sin(phi)**2)
+            A0 = 1 - (self.ecc2 / 4) - ((3 * (self.ecc2**2)) / 64) - ((5 * (self.ecc2**3)) / 256)
+            A2 = (3 / 8) * (self.ecc2 + (self.ecc2**2) / 4 + (15 * (self.ecc2**3)) / 128)
+            A4 = (15 / 256) * (self.ecc2**2 + (3 * (self.ecc2**3)) / 4)
+            A6 = (35 * (self.ecc2**3)) / 3072
+            sigma = self.a * (A0 * phi - A2 * sin(2 * phi) + A4 * sin(4 * phi) - A6 * sin(6*phi))
+            xgk = sigma + ((deltal)**2)/2 * N * sin(phi) * cos(phi) * (1 + ((deltal)**2)/12 * (cos(phi))**2 * (5 - t**2 + 9 * eta2 + 4 * (eta2)**2) + ((deltal)**4)/360 * (cos(phi))**4 * (61 - 58*t**2 + t**4 + 270*eta2 - 330*eta2*t**2))
+            ygk = deltal * N * cos(phi) * (1 + ((deltal)**2)/6 * (cos(phi))**2 * (1 - t**2 + eta2) + ((deltal)**4)/120 * (cos(phi))**4 * (5 - 18 * t**2 + t**4 + 14 * eta2 - 58 * eta2 * t**2))
+            x1992 = xgk * 0.9993 - 5300000
+            y1992 = ygk * 0.9993 + 500000
+        return x1992, y1992
             
 if __name__ == "__main__":
     # utworzenie obiektu
@@ -119,16 +182,19 @@ if __name__ == "__main__":
         
     elif '--xyz2plh' in sys.argv:
         with open(input_file_path, 'r') as f:
-        	lines = f.readlines()
-        	lines = lines[4:]
+            lines = f.readlines()
+            lines = lines[4:]
         
-        	coords_plh = []
-        	for line in lines: 
-        		line = line.strip()
-        		x_str,y_str,z_str = line.split(',')
-        		x,y,z = float(x_str),float(y_str),float(z_str)
-        		p,l,h = geo.xyz2plh(x,y,z)
-        		coords_plh.append([p,l,h])
+            coords_plh = []
+            for line in lines: 
+                line = line.strip()
+                x_str,y_str,z_str = line.split(',')
+                x,y,z = float(x_str),float(y_str),float(z_str)
+                if 'dms' in sys.argv:
+                    p,l,h = geo.xyz2plh(x,y,z, output = 'dms')
+                else:
+                    p,l,h = geo.xyz2plh(x,y,z)
+                coords_plh.append([p,l,h])
     
         with open('result_xyz2plh.txt','w+') as f:
             f.write('phi[deg], lam[deg], h[m] \n')
@@ -140,8 +206,8 @@ if __name__ == "__main__":
     elif '--plh2xyz' in sys.argv:  
             
         with open(input_file_path, 'r') as f:
-        	lines = f.readlines()
-        	lines = lines[4:]
+            lines = f.readlines()
+            lines = lines[4:]
             
         coords_xyz = []
         for line in lines: 
