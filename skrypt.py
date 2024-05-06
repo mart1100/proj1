@@ -29,6 +29,25 @@ class Transformacje:
         self.flat = (self.a - self.b) / self.a
         self.ecc = sqrt(2 * self.flat - self.flat ** 2) # eccentricity  WGS84:0.0818191910428 
         self.ecc2 = (2 * self.flat - self.flat ** 2) # eccentricity**2
+        
+    def deg2dms(self, deg):
+        '''
+        Funkcja zamieniająca stopnie dziesiętne na stopnie, minuty, sekundy.
+        Parameters
+        ----------
+        deg : float
+            stopnie w postaci dziesiętnej (decimal degrees)
+
+        Returns
+        -------
+        d : stopnie
+        m : minuty
+        s : sekundy
+        '''
+        d = int(deg)
+        m = int(60 * (deg - d))
+        s = (deg - d - m/60) * 3600
+        return(d,m,s)
 
 
     
@@ -70,7 +89,8 @@ class Transformacje:
         elif output == "dms":
             lat = self.deg2dms(degrees(lat))
             lon = self.deg2dms(degrees(lon))
-            return f"{lat[0]:02d}:{lat[1]:02d}:{lat[2]:.2f}", f"{lon[0]:02d}:{lon[1]:02d}:{lon[2]:.2f}", f"{h:.3f}"
+            # return f"{lat[0]:02d}:{lat[1]:02d}:{lat[2]:.2f}", f"{lon[0]:02d}:{lon[1]:02d}:{lon[2]:.2f}", f"{h:.3f}"
+            return f'{lat[0]:3d}{chr(176)}{abs(lat[1]):02d}\'{abs(lat[2]):.2f}\"', f'{lon[0]:3d}{chr(176)}{abs(lon[1]):02d}\'{abs(lon[2]):.2f}\"', f"{h:.3f}"
         else:
             raise NotImplementedError(f"{output} - output format not defined")
             
@@ -145,16 +165,19 @@ if __name__ == "__main__":
         
     elif '--xyz2plh' in sys.argv:
         with open(input_file_path, 'r') as f:
-        	lines = f.readlines()
-        	lines = lines[4:]
+            lines = f.readlines()
+            lines = lines[4:]
         
-        	coords_plh = []
-        	for line in lines: 
-        		line = line.strip()
-        		x_str,y_str,z_str = line.split(',')
-        		x,y,z = float(x_str),float(y_str),float(z_str)
-        		p,l,h = geo.xyz2plh(x,y,z)
-        		coords_plh.append([p,l,h])
+            coords_plh = []
+            for line in lines: 
+                line = line.strip()
+                x_str,y_str,z_str = line.split(',')
+                x,y,z = float(x_str),float(y_str),float(z_str)
+                if 'dms' in sys.argv:
+                    p,l,h = geo.xyz2plh(x,y,z, output = 'dms')
+                else:
+                    p,l,h = geo.xyz2plh(x,y,z)
+                coords_plh.append([p,l,h])
     
         with open('result_xyz2plh.txt','w+') as f:
             f.write('phi[deg], lam[deg], h[m] \n')
@@ -166,8 +189,8 @@ if __name__ == "__main__":
     elif '--plh2xyz' in sys.argv:  
             
         with open(input_file_path, 'r') as f:
-        	lines = f.readlines()
-        	lines = lines[4:]
+            lines = f.readlines()
+            lines = lines[4:]
             
         coords_xyz = []
         for line in lines: 
