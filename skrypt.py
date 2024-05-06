@@ -177,6 +177,9 @@ if __name__ == "__main__":
     # print(phi, lam, h)
     input_file_path = sys.argv[-1]
     
+    if '--header_lines' in sys.argv:
+        header_lines = int(sys.argv[3])
+    
     if '--xyz2plh' in sys.argv and '--plh2xyz' in sys.argv:
         print('Możesz podać tylko jedną flagę.')
         
@@ -223,3 +226,21 @@ if __name__ == "__main__":
                 coords_xyz_line = ','.join([f'{coord:11.3f}' for coord in coords])
                 f.write(coords_xyz_line + '\n')
 
+    elif '--pl21992' in sys.argv:
+        with open(input_file_path, 'r') as f:
+        	lines = f.readlines()
+        	lines = lines[header_lines:]
+            
+        coords_1992 = []
+        for line in lines: 
+            line = line.strip()
+            phi_str,lam_str,h_str = line.split(',')
+            phi, lam,h = float(phi_str),float(lam_str),float(h_str)
+            x, y = geo.pl21992(phi, lam)
+            coords_1992.append([x,y])
+        
+        with open('result_pl21992.txt','w+') as f:
+            f. write('x[m], y[m] \n')
+            for coords in coords_1992:
+                coords_1992_line = ','.join([f'{coord:11.3f}' for coord in coords])
+                f.write(coords_1992_line + '\n')
