@@ -299,3 +299,22 @@ if __name__ == "__main__":
             for coords in coords_1992:
                 coords_1992_line = ','.join([f'{coord:11.3f}' for coord in coords])
                 f.write(coords_1992_line + '\n')
+                
+    elif '--pl22000' in sys.argv:
+        with open(input_file_path, 'r') as f:
+        	lines = f.readlines()
+        	lines = lines[header_lines:]
+            
+        coords_2000 = []
+        for line in lines: 
+            line = line.strip()
+            phi_str,lam_str,h_str = line.split(',')
+            phi, lam,h = float(phi_str),float(lam_str),float(h_str)
+            x, y = geo.pl22000(phi, lam)
+            coords_2000.append([x,y])
+        
+        with open('result_pl22000.txt','w+') as f:
+            f. write('x[m], y[m] \n')
+            for coords in coords_2000:
+                coords_2000_line = ','.join([f'{coord:11.3f}' for coord in coords])
+                f.write(coords_2000_line + '\n')
