@@ -241,7 +241,7 @@ if __name__ == "__main__":
     elif '--xyz2plh' in sys.argv:
         with open(input_file_path, 'r') as f:
             lines = f.readlines()
-            lines = lines[4:]
+            lines = lines[header_lines:]
         
             coords_plh = []
             for line in lines: 
@@ -265,7 +265,7 @@ if __name__ == "__main__":
             
         with open(input_file_path, 'r') as f:
             lines = f.readlines()
-            lines = lines[4:]
+            lines = lines[header_lines:]
             
         coords_xyz = []
         for line in lines: 
