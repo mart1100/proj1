@@ -238,10 +238,14 @@ if __name__ == "__main__":
         header_lines = int(sys.argv[3])
         
     if '--model' in sys.argv:
-        model_inp= sys.argv[5]
+        model_inp = sys.argv[5]
         model_elip = model_inp.lower()
         if model_elip != 'grs80' and model_elip != 'wgs84' and model_elip != 'krasowski':
-            raise NotImplementedError(f'{model_elip} - reference ellipsoid  not recognized.')
+            raise NotImplementedError(f'{model_elip} - reference ellipsoid  model not recognized.')
+            
+    
+    if '--flags' in sys.argv:  #displays all callable flags
+        print('\n --xyz2plh \n --plh2xyz \n --pl21992 \n --pl22000 \n --xyz2neu \n --header_lines \n --model') 
             
     
     if '--xyz2plh' in sys.argv and '--plh2xyz' in sys.argv:
