@@ -1,5 +1,6 @@
 from math import sin, cos, sqrt, atan, atan2, degrees, radians, tan
 import sys
+import numpy as np
 
 o = object()
 
@@ -219,6 +220,38 @@ class Transformacje:
             x2000 = xgk * 0.999923
             y2000 = ygk * 0.999923 + 500000 + c * 1000000
         return x2000, y2000
+    
+    
+    def xyz2neu(self, x, y, z, x0, y0, z0):
+        '''
+        Transformacja współrzędnych geocentrycznych do układu topocentrycznego 
+        NEU (NORTHING, EASTING, UP). Następuje ona przez przesunięcie początku
+        układu współrzędnych do nowego punktu centrum (x0, y0, z0) i rotację.
+
+        Parameters
+        ----------
+        x, y, z : FLOAT
+            [m] - współrzędne geocentryczne 
+        x0, y0, z0 : FOAT
+            [m] - współrzędne geocentryczne nowego srodka układu
+
+        Returns
+        -------
+        n, e, u : TUPLE
+            [m] - współrzędne topocentryczne 
+
+        '''
+        phi, lam, _ = [radians(coord) for coord in self.xyz2plh(x, y, z)]
+        R = np.array([[-sin(phi) * cos(lam), -sin(lam), cos(phi) * cos(lam)],
+                      [-sin(phi) * sin(lam), cos(lam), cos(phi) * sin(lam)],
+                      [cos(phi), 0, sin(phi)]])
+        #translacjA
+        XYZT = np.array([[x - x0],
+                         [y - y0],
+                         [z - z0]])
+        #rotacja
+        [[n], [e], [u]] = R.T @ XYZT
+        return n, e, u
             
 if __name__ == "__main__":
     # utworzenie obiektu
