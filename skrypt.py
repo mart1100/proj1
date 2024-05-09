@@ -332,3 +332,25 @@ if __name__ == "__main__":
             for coords in coords_1992:
                 coords_1992_line = ','.join([f'{coord:11.3f}' for coord in coords])
                 f.write(coords_1992_line + '\n')
+                
+
+    elif '--xyz2neu' in sys.argv:
+        with open(input_file_path, 'r') as f:
+            lines = f.readlines()
+            lines = lines[header_lines:]
+        
+        coords_neu = []
+        for line in lines: 
+            line = line.strip()
+            x, y, z = line.split(',')
+            x, y, z = (float(x),float(y),float(z))
+            x0, y0, z0 = sys.argv[-4:-1]
+            x0, y0, z0 = (float(x0),float(y0),float(z0))
+            n, e, u = geo.xyz2neu(x, y, z, x0, y0, z0)
+            coords_neu.append([n, e, u])
+    
+        with open('result_xyz2neu.txt','w+') as f:
+            f. write('n[m], e[m], u[m] \n')
+            for coords in coords_neu:
+                coords_neu_line = ','.join([f'{coord:11.3f}' for coord in coords])
+                f.write(coords_neu_line + '\n')
