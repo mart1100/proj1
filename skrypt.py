@@ -191,16 +191,12 @@ class Transformacje:
         else:
             if lam < 16.5:
                 lam0 = radians(15)
-                c = lam0 / 3
             elif lam >= 16.5 and lam < 19.5:
                 lam0 = radians(18)
-                c = lam0 / 3
             elif lam >= 19.5 and lam < 22.5:
                 lam0 = radians(21)
-                c = lam0 / 3
             else:
                 lam0 = radians(24)
-                c = lam0 / 3 
             phi = radians(phi)
             lam = radians(lam)
             b2 = self.a**2 * (1 - self.ecc2)
