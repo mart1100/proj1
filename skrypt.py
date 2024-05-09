@@ -217,7 +217,7 @@ class Transformacje:
             xgk = sigma + ((deltal)**2)/2 * N * sin(phi) * cos(phi) * (1 + ((deltal)**2)/12 * (cos(phi))**2 * (5 - t**2 + 9 * eta2 + 4 * (eta2)**2) + ((deltal)**4)/360 * (cos(phi))**4 * (61 - 58*t**2 + t**4 + 270*eta2 - 330*eta2*t**2))
             ygk = deltal * N * cos(phi) * (1 + ((deltal)**2)/6 * (cos(phi))**2 * (1 - t**2 + eta2) + ((deltal)**4)/120 * (cos(phi))**4 * (5 - 18 * t**2 + t**4 + 14 * eta2 - 58 * eta2 * t**2))
             x2000 = xgk * 0.999923
-            y2000 = ygk * 0.999923 + 500000 + c * 1000000
+            y2000 = ygk * 0.999923 + degrees(lam0)/3 * 1000000 + 500000
         return x2000, y2000
             
 if __name__ == "__main__":
