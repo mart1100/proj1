@@ -262,9 +262,19 @@ if __name__ == "__main__":
                 x_str,y_str,z_str = line.split(',')
                 x,y,z = float(x_str),float(y_str),float(z_str)
                 if 'dms' in sys.argv:
-                    p,l,h = geo.xyz2plh(x,y,z, output = 'dms')
+                    if model_elip == 'wgs84':
+                        p,l,h = geo.xyz2plh(x,y,z, output = 'dms')
+                    elif model_elip == 'grs80':
+                        p,l,h = grs.xyz2plh(x,y,z, output = 'dms')
+                    elif model_elip == 'krasowski':
+                        p,l,h = kras.xyz2plh(x,y,z, output = 'dms')
                 else:
-                    p,l,h = geo.xyz2plh(x,y,z)
+                    if model_elip == 'wgs84':
+                        p,l,h = geo.xyz2plh(x,y,z)
+                    elif model_elip == 'grs80':
+                        p,l,h = grs.xyz2plh(x,y,z)
+                    elif model_elip == 'krasowski':
+                        p,l,h = kras.xyz2plh(x,y,z)
                 coords_plh.append([p,l,h])
     
         with open('result_xyz2plh.txt','w+') as f:
@@ -309,7 +319,10 @@ if __name__ == "__main__":
             line = line.strip()
             phi_str,lam_str,h_str = line.split(',')
             phi, lam,h = float(phi_str),float(lam_str),float(h_str)
-            x, y = geo.pl21992(phi, lam)
+            if model_elip == 'wgs84':
+                x, y = geo.pl21992(phi, lam)
+            elif model_elip == 'grs80':
+                x, y = grs.pl21992(phi, lam)
             coords_1992.append([x,y])
         
         with open('result_pl21992.txt','w+') as f:
@@ -328,7 +341,10 @@ if __name__ == "__main__":
             line = line.strip()
             phi_str,lam_str,h_str = line.split(',')
             phi, lam,h = float(phi_str),float(lam_str),float(h_str)
-            x, y = geo.pl22000(phi, lam)
+            if model_elip == 'wgs84':
+                x, y = geo.pl22000(phi, lam)
+            elif model_elip == 'grs80':
+                x, y = grs.pl22000(phi, lam)
             coords_2000.append([x,y])
         
         with open('result_pl22000.txt','w+') as f:
