@@ -335,8 +335,6 @@ if __name__ == "__main__":
                 
 
     elif '--xyz2neu' in sys.argv:
-        if len(sys.argv) < 7:
-            raise ValueError("x0, y0, z0 are required to run xyz2neu method")
         x0, y0, z0 = sys.argv[-4:-1]
         try:
             x0 = float(x0)
@@ -354,8 +352,12 @@ if __name__ == "__main__":
             line = line.strip()
             x, y, z = line.split(',')
             x, y, z = float(x), float(y), float(z)
-        
-            n, e, u = geo.xyz2neu(x, y, z, x0, y0, z0)
+            if model_elip == 'wgs84':
+                n, e, u = geo.xyz2neu(x, y, z, x0, y0, z0)
+            elif model_elip == 'grs80':
+                n, e, u = grs.xyz2neu(x, y, z, x0, y0, z0)
+            elif model_elip == 'krasowski':
+                n, e, u = kras.xyz2neu(x, y, z, x0, y0, z0)
             coords_neu.append([n, e, u])
 
         with open('result_xyz2neu.txt', 'w+') as f:
