@@ -241,6 +241,9 @@ class Transformacje:
             [m] - współrzędne topocentryczne 
 
         '''
+        if x0 is None or y0 is None or z0 is None:
+            raise ValueError("x0, y0, z0 are required to run xyz2neu method")
+        
         phi, lam, _ = [radians(coord) for coord in self.xyz2plh(x, y, z)]
         R = np.array([[-sin(phi) * cos(lam), -sin(lam), cos(phi) * cos(lam)],
                       [-sin(phi) * sin(lam), cos(lam), cos(phi) * sin(lam)],
