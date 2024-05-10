@@ -63,12 +63,12 @@ class Transformacje:
 
         Returns
         -------
-        lat
+        lat : FLOAT
             [stopnie dziesiętne] - szerokość geodezyjna
-        lon
+        lon : FLOAT
             [stopnie dziesiętne] - długośc geodezyjna.
-        h : TYPE
-            [metry] - wysokość elipsoidalna
+        h : FLOAT
+            [m] - wysokość elipsoidalna
         output [STR] - optional, defoulf 
             dec_degree - decimal degree
             dms - degree, minutes, sec
