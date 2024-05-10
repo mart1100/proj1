@@ -16,13 +16,13 @@ class Transformacje:
         + Inne powierzchnie odniesienia: https://en.wikibooks.org/wiki/PROJ.4#Spheroid
         + Parametry planet: https://nssdc.gsfc.nasa.gov/planetary/factsheet/index.html
         """
-        if model == "wgs84" or model == "Wgs84" or model == "WGS84":
+        if model == "wgs84":
             self.a = 6378137.0 # semimajor_axis
             self.b = 6356752.31424518 # semiminor_axis
-        elif model == "grs80" or model == "Grs80" or model == "GRS80":
+        elif model == "grs80":
             self.a = 6378137.0
             self.b = 6356752.31414036
-        elif model == "krasowski" or model == "Krasowski" or model == "Krassowski" or model == "krassowski" or model == "krass" or model == "Krass":
+        elif model == "krasowski":
             self.a = 6378245.0
             self.b = 6356863.019
         else:
@@ -218,7 +218,7 @@ class Transformacje:
             xgk = sigma + ((deltal)**2)/2 * N * sin(phi) * cos(phi) * (1 + ((deltal)**2)/12 * (cos(phi))**2 * (5 - t**2 + 9 * eta2 + 4 * (eta2)**2) + ((deltal)**4)/360 * (cos(phi))**4 * (61 - 58*t**2 + t**4 + 270*eta2 - 330*eta2*t**2))
             ygk = deltal * N * cos(phi) * (1 + ((deltal)**2)/6 * (cos(phi))**2 * (1 - t**2 + eta2) + ((deltal)**4)/120 * (cos(phi))**4 * (5 - 18 * t**2 + t**4 + 14 * eta2 - 58 * eta2 * t**2))
             x2000 = xgk * 0.999923
-            y2000 = ygk * 0.999923 + 500000 + c * 1000000
+            y2000 = ygk * 0.999923 + degrees(lam0)/3 * 1000000 + 500000
         return x2000, y2000
     
     
@@ -256,6 +256,8 @@ class Transformacje:
 if __name__ == "__main__":
     # utworzenie obiektu
     geo = Transformacje(model = "wgs84")
+    grs = Transformacje(model = 'grs80')
+    kras = Transformacje(model = 'krasowski')
     print(sys.argv)
     # dane XYZ geocentryczne
     # X = 3664940.500; Y = 1409153.590; Z = 5009571.170
@@ -267,6 +269,17 @@ if __name__ == "__main__":
     
     if '--header_lines' in sys.argv:
         header_lines = int(sys.argv[3])
+        
+    if '--model' in sys.argv:
+        model_inp = sys.argv[5]
+        model_elip = model_inp.lower()
+        if model_elip != 'grs80' and model_elip != 'wgs84' and model_elip != 'krasowski':
+            raise NotImplementedError(f'{model_elip} - reference ellipsoid  model not recognized.')
+            
+    
+    if '--flags' in sys.argv:  #displays all callable flags
+        print('\n --xyz2plh \n --plh2xyz \n --pl21992 \n --pl22000 \n --xyz2neu \n --header_lines \n --model') 
+            
     
     if '--xyz2plh' in sys.argv and '--plh2xyz' in sys.argv:
         print('Możesz podać tylko jedną flagę.')
@@ -282,9 +295,19 @@ if __name__ == "__main__":
                 x_str,y_str,z_str = line.split(',')
                 x,y,z = float(x_str),float(y_str),float(z_str)
                 if 'dms' in sys.argv:
-                    p,l,h = geo.xyz2plh(x,y,z, output = 'dms')
+                    if model_elip == 'wgs84':
+                        p,l,h = geo.xyz2plh(x,y,z, output = 'dms')
+                    elif model_elip == 'grs80':
+                        p,l,h = grs.xyz2plh(x,y,z, output = 'dms')
+                    elif model_elip == 'krasowski':
+                        p,l,h = kras.xyz2plh(x,y,z, output = 'dms')
                 else:
-                    p,l,h = geo.xyz2plh(x,y,z)
+                    if model_elip == 'wgs84':
+                        p,l,h = geo.xyz2plh(x,y,z)
+                    elif model_elip == 'grs80':
+                        p,l,h = grs.xyz2plh(x,y,z)
+                    elif model_elip == 'krasowski':
+                        p,l,h = kras.xyz2plh(x,y,z)
                 coords_plh.append([p,l,h])
     
         with open('result_xyz2plh.txt','w+') as f:
@@ -305,7 +328,12 @@ if __name__ == "__main__":
             line = line.strip()
             phi_str,lam_str,h_str = line.split(',')
             phi, lam, h = float(phi_str),float(lam_str),float(h_str)
-            x, y, z = geo.plh2xyz(phi,lam,h)
+            if model_elip == 'wgs84':
+                x, y, z = geo.plh2xyz(phi,lam,h)
+            elif model_elip == 'grs80':
+                x, y, z = grs.plh2xyz(phi,lam,h)
+            elif model_elip == 'krasowski':
+                x, y, z = kras.plh2xyz(phi,lam,h)
             coords_xyz.append([x,y,z])
     
         with open('result_plh2xyz.txt','w+') as f:
@@ -324,7 +352,10 @@ if __name__ == "__main__":
             line = line.strip()
             phi_str,lam_str,h_str = line.split(',')
             phi, lam,h = float(phi_str),float(lam_str),float(h_str)
-            x, y = geo.pl21992(phi, lam)
+            if model_elip == 'wgs84':
+                x, y = geo.pl21992(phi, lam)
+            elif model_elip == 'grs80':
+                x, y = grs.pl21992(phi, lam)
             coords_1992.append([x,y])
         
         with open('result_pl21992.txt','w+') as f:
@@ -334,6 +365,29 @@ if __name__ == "__main__":
                 f.write(coords_1992_line + '\n')
                 
 
+    elif '--pl22000' in sys.argv:
+        with open(input_file_path, 'r') as f:
+        	lines = f.readlines()
+        	lines = lines[header_lines:]
+            
+        coords_2000 = []
+        for line in lines: 
+            line = line.strip()
+            phi_str,lam_str,h_str = line.split(',')
+            phi, lam,h = float(phi_str),float(lam_str),float(h_str)
+            if model_elip == 'wgs84':
+                x, y = geo.pl22000(phi, lam)
+            elif model_elip == 'grs80':
+                x, y = grs.pl22000(phi, lam)
+            coords_2000.append([x,y])
+        
+        with open('result_pl22000.txt','w+') as f:
+            f. write('x[m], y[m] \n')
+            for coords in coords_2000:
+                coords_2000_line = ','.join([f'{coord:11.3f}' for coord in coords])
+                f.write(coords_2000_line + '\n')
+                
+                
     elif '--xyz2neu' in sys.argv:
         x0, y0, z0 = sys.argv[-4:-1]
         try:
@@ -365,4 +419,3 @@ if __name__ == "__main__":
             for coords in coords_neu:
                 coords_neu_line = ','.join([f'{coord:11.3f}' for coord in coords])
                 f.write(coords_neu_line + '\n')
-
