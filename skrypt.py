@@ -241,9 +241,6 @@ class Transformacje:
             [m] - współrzędne topocentryczne 
 
         '''
-        if x0 is None or y0 is None or z0 is None:
-            raise ValueError("x0, y0, z0 are required to run xyz2neu method")
-        
         phi, lam, _ = [radians(coord) for coord in self.xyz2plh(x, y, z)]
         R = np.array([[-sin(phi) * cos(lam), -sin(lam), cos(phi) * cos(lam)],
                       [-sin(phi) * sin(lam), cos(lam), cos(phi) * sin(lam)],
@@ -338,22 +335,32 @@ if __name__ == "__main__":
                 
 
     elif '--xyz2neu' in sys.argv:
+        if len(sys.argv) < 7:
+            raise ValueError("x0, y0, z0 are required to run xyz2neu method")
+        x0, y0, z0 = sys.argv[-4:-1]
+        try:
+            x0 = float(x0)
+            y0 = float(y0)
+            z0 = float(z0)
+        except ValueError:
+            raise ValueError("x0, y0, z0 must be floats.")
+
         with open(input_file_path, 'r') as f:
             lines = f.readlines()
             lines = lines[header_lines:]
-        
+
         coords_neu = []
         for line in lines: 
             line = line.strip()
             x, y, z = line.split(',')
-            x, y, z = (float(x),float(y),float(z))
-            x0, y0, z0 = sys.argv[-4:-1]
-            x0, y0, z0 = (float(x0),float(y0),float(z0))
+            x, y, z = float(x), float(y), float(z)
+        
             n, e, u = geo.xyz2neu(x, y, z, x0, y0, z0)
             coords_neu.append([n, e, u])
-    
-        with open('result_xyz2neu.txt','w+') as f:
-            f. write('n[m], e[m], u[m] \n')
+
+        with open('result_xyz2neu.txt', 'w+') as f:
+            f.write('n[m], e[m], u[m] \n')
             for coords in coords_neu:
                 coords_neu_line = ','.join([f'{coord:11.3f}' for coord in coords])
                 f.write(coords_neu_line + '\n')
+
