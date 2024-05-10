@@ -1,5 +1,6 @@
 from math import sin, cos, sqrt, atan, atan2, degrees, radians, tan
 import sys
+import numpy as np
 
 o = object()
 
@@ -219,6 +220,38 @@ class Transformacje:
             x2000 = xgk * 0.999923
             y2000 = ygk * 0.999923 + degrees(lam0)/3 * 1000000 + 500000
         return x2000, y2000
+    
+    
+    def xyz2neu(self, x, y, z, x0, y0, z0):
+        '''
+        Transformacja współrzędnych geocentrycznych do układu topocentrycznego 
+        NEU (NORTHING, EASTING, UP). Następuje ona przez przesunięcie początku
+        układu współrzędnych do nowego punktu centrum (x0, y0, z0) i rotację.
+
+        Parameters
+        ----------
+        x, y, z : FLOAT
+            [m] - współrzędne geocentryczne 
+        x0, y0, z0 : FOAT
+            [m] - współrzędne geocentryczne nowego srodka układu
+
+        Returns
+        -------
+        n, e, u : TUPLE
+            [m] - współrzędne topocentryczne 
+
+        '''
+        phi, lam, _ = [radians(coord) for coord in self.xyz2plh(x, y, z)]
+        R = np.array([[-sin(phi) * cos(lam), -sin(lam), cos(phi) * cos(lam)],
+                      [-sin(phi) * sin(lam), cos(lam), cos(phi) * sin(lam)],
+                      [cos(phi), 0, sin(phi)]])
+        #translacjA
+        XYZT = np.array([[x - x0],
+                         [y - y0],
+                         [z - z0]])
+        #rotacja
+        [[n], [e], [u]] = R.T @ XYZT
+        return n, e, u
             
 if __name__ == "__main__":
     # utworzenie obiektu
@@ -331,6 +364,7 @@ if __name__ == "__main__":
                 coords_1992_line = ','.join([f'{coord:11.3f}' for coord in coords])
                 f.write(coords_1992_line + '\n')
                 
+
     elif '--pl22000' in sys.argv:
         with open(input_file_path, 'r') as f:
         	lines = f.readlines()
@@ -352,3 +386,36 @@ if __name__ == "__main__":
             for coords in coords_2000:
                 coords_2000_line = ','.join([f'{coord:11.3f}' for coord in coords])
                 f.write(coords_2000_line + '\n')
+                
+                
+    elif '--xyz2neu' in sys.argv:
+        x0, y0, z0 = sys.argv[-4:-1]
+        try:
+            x0 = float(x0)
+            y0 = float(y0)
+            z0 = float(z0)
+        except ValueError:
+            raise ValueError("x0, y0, z0 must be floats.")
+
+        with open(input_file_path, 'r') as f:
+            lines = f.readlines()
+            lines = lines[header_lines:]
+
+        coords_neu = []
+        for line in lines: 
+            line = line.strip()
+            x, y, z = line.split(',')
+            x, y, z = float(x), float(y), float(z)
+            if model_elip == 'wgs84':
+                n, e, u = geo.xyz2neu(x, y, z, x0, y0, z0)
+            elif model_elip == 'grs80':
+                n, e, u = grs.xyz2neu(x, y, z, x0, y0, z0)
+            elif model_elip == 'krasowski':
+                n, e, u = kras.xyz2neu(x, y, z, x0, y0, z0)
+            coords_neu.append([n, e, u])
+
+        with open('result_xyz2neu.txt', 'w+') as f:
+            f.write('n[m], e[m], u[m] \n')
+            for coords in coords_neu:
+                coords_neu_line = ','.join([f'{coord:11.3f}' for coord in coords])
+                f.write(coords_neu_line + '\n')
