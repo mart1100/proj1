@@ -21,11 +21,11 @@ Wymagania, które musi spełnić komputer użytkownika:
 
 ## Funkcje:
 Lista funkcji, które oferuje program:
---xyz2plh: Wykorzystując algorytm Hirvonena, przelicza współrzędne ortokartezjańskie (x, y, z) na współrzędne geodezyjne (phi, lambda, h).
---plh2xyz: Przelicza współrzędne geodezyjne (phi, lambda, h) na współrzędne ortokartezjańskie (x, y, z).
---pl21992: Przelicza współrzędne geodezyjne (phi, lambda) do układu 1992.
---pl22000: Przelicza współrzędne geodezyjne (phi, lambda) do układu 2000.
---deg2dms: Zamienia stopnie dziesiętna na stopnie, minuty i sekundy.
+* --xyz2plh: Wykorzystując algorytm Hirvonena, przelicza współrzędne ortokartezjańskie (x, y, z) na współrzędne geodezyjne (phi, lambda, h).
+* --plh2xyz: Przelicza współrzędne geodezyjne (phi, lambda, h) na współrzędne ortokartezjańskie (x, y, z).
+* --pl21992: Przelicza współrzędne geodezyjne (phi, lambda) do układu 1992.
+* --pl22000: Przelicza współrzędne geodezyjne (phi, lambda) do układu 2000.
+* --deg2dms: Zamienia stopnie dziesiętna na stopnie, minuty i sekundy.
 
 ## Uruchomienie programu
 Program należy uruchomić za pomocą Terminala lub Microsoft PowerShell, wpisując w wiersz poleceń komendę:
@@ -36,11 +36,11 @@ gdzie w miejscu flagi [--funkcja] należy wpisać jedną z interesujących nas f
 ## Przykłady użycia
 1. Przeliczanie współrzędnych ortokartezjańskich na współrzędne geodezyjne.
 Parametrami wejściowymi są:
-*X, Y, Z : FLOAT,współrzędne w układzie orto-kartezjańskim, 
+* X, Y, Z : FLOAT,współrzędne w układzie orto-kartezjańskim, 
 Parametrami wyjściowymi są:
-*lat : FLOAT, [stopnie dziesiętne] - szerokość geodezyjna
-*lon : FLOAT, [stopnie dziesiętne] - długośc geodezyjna
-*h : FLOAT, [m] - wysokość elipsoidalna
+* lat : FLOAT, [stopnie dziesiętne] - szerokość geodezyjna
+* lon : FLOAT, [stopnie dziesiętne] - długośc geodezyjna
+* h : FLOAT, [m] - wysokość elipsoidalna
 W wierszu poleceń należy wpisać komendę:
 python skrypt.py [--xyz2plh] wsp_inp.txt
 
@@ -48,11 +48,11 @@ W ten sposób powstaje plik tekstowy zawierający wyniki tej operacji: result_xy
 
 2. Przeliczenie współrzędnych geodezyjnych do układu PL1992.
 Parametrami wejściowymi są:
-*phi: FLOAT, [stopnie dziesiętne] - szerokosć geodezyjna
-*lam: FLOAT, [stopnie dziesiętne] - długosć geodezyjna
+* phi: FLOAT, [stopnie dziesiętne] - szerokosć geodezyjna
+* lam: FLOAT, [stopnie dziesiętne] - długosć geodezyjna
 Parametrami wyjściowymi są:
-*x1992 : FLOAT, [m] - odcięta w układzie 1992
-*y1992 : FLOAT, [m] - rzędna w układzie 1992
+* x1992 : FLOAT, [m] - odcięta w układzie 1992
+* y1992 : FLOAT, [m] - rzędna w układzie 1992
 
 W wierszu poleceń należy wpisać komendę:
 python skrypt.py [--pl21992] wsp_inp.txt
