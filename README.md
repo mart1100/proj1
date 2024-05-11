@@ -10,3 +10,11 @@ Wymagania, które musi spełnić komputer użytkownika:
 2. Zainstalowane biblioteki sys oraz math
 3. Dane wejściowe muszą być zapisane w pliku tekstowym.
 4. Posiadanie systemu operacyjnego Windows, MacOS lub Linux.
+
+## Funkcje:
+Lista funkcji, które 
+--xyz2plh: Wykorzystując algorytm Hirvonena, przelicza współrzędne ortokartezjańskie (x, y, z) na współrzędne geodezyjne (phi, lambda, h).
+--plh2xyz: Przelicza współrzędne geodezyjne (phi, lambda, h) na współrzędne ortokartezjańskie (x, y, z).
+--pl21992: Przelicza współrzędne geodezyjne (phi, lambda) do układu 1992.
+--pl22000: Przelicza współrzędne geodezyjne (phi, lambda) do układu 2000.
+--deg2dms: Zamienia stopnie dziesiętna na stopnie, minuty i sekundy.
