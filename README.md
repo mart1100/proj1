@@ -48,3 +48,6 @@ W wierszu poleceń należy wpisać komendę:
 python skrypt.py [--pl21992] wsp_inp.txt
 
 W ten sposób powstaje plik tekstowy zawierający wyniki tej operacji: result_pl21992.txt
+
+## Znane błędy
+W dokumentacji programu niemożliwe jest używanie polskiego znaku 'ś'.
