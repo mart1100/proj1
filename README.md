@@ -25,6 +25,7 @@ Lista funkcji, które oferuje program:
 * --plh2xyz: Przelicza współrzędne geodezyjne (phi, lambda, h) na współrzędne ortokartezjańskie (x, y, z).
 * --pl21992: Przelicza współrzędne geodezyjne (phi, lambda) do układu 1992.
 * --pl22000: Przelicza współrzędne geodezyjne (phi, lambda) do układu 2000.
+* --xyz2neu: Transformuje współrzędne geocentryczne do układu topocentrycznego.
 * --deg2dms: Zamienia stopnie dziesiętna na stopnie, minuty i sekundy.
 
 ## Uruchomienie programu
@@ -39,7 +40,7 @@ Parametrami wejściowymi są:
 * X, Y, Z : FLOAT,współrzędne w układzie orto-kartezjańskim, 
 Parametrami wyjściowymi są:
 * lat : FLOAT, [stopnie dziesiętne] - szerokość geodezyjna
-* lon : FLOAT, [stopnie dziesiętne] - długośc geodezyjna
+* lon : FLOAT, [stopnie dziesiętne] - długość geodezyjna
 * h : FLOAT, [m] - wysokość elipsoidalna
 W wierszu poleceń należy wpisać komendę:
 python skrypt.py [--xyz2plh] wsp_inp.txt
