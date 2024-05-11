@@ -20,7 +20,7 @@ Wymagania, które musi spełnić komputer użytkownika:
 4. Posiadanie systemu operacyjnego Windows, MacOS lub Linux.
 
 ## Funkcje:
-Lista funkcji, które 
+Lista funkcji, które oferuje program:
 --xyz2plh: Wykorzystując algorytm Hirvonena, przelicza współrzędne ortokartezjańskie (x, y, z) na współrzędne geodezyjne (phi, lambda, h).
 --plh2xyz: Przelicza współrzędne geodezyjne (phi, lambda, h) na współrzędne ortokartezjańskie (x, y, z).
 --pl21992: Przelicza współrzędne geodezyjne (phi, lambda) do układu 1992.
@@ -36,9 +36,11 @@ gdzie w miejscu flagi [--funkcja] należy wpisać jedną z interesujących nas f
 ## Przykłady użycia
 1. Przeliczanie współrzędnych ortokartezjańskich na współrzędne geodezyjne.
 Parametrami wejściowymi są:
-X, Y, Z : FLOAT,współrzędne w układzie orto-kartezjańskim, 
+*X, Y, Z : FLOAT,współrzędne w układzie orto-kartezjańskim, 
 Parametrami wyjściowymi są:
-
+*lat : FLOAT, [stopnie dziesiętne] - szerokość geodezyjna
+*lon : FLOAT, [stopnie dziesiętne] - długośc geodezyjna
+*h : FLOAT, [m] - wysokość elipsoidalna
 W wierszu poleceń należy wpisać komendę:
 python skrypt.py [--xyz2plh] wsp_inp.txt
 
