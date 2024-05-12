@@ -95,6 +95,64 @@ class Transformacje:
         else:
             raise NotImplementedError(f"{output} - output format not defined")
             
+            
+    def xyzGRS2KRA(self, x_grs, y_grs, z_grs):
+        """
+        Transformacja współrzędnych kartezjańskich - geocentrycznych
+        pomiędzy układami elipsoid: GRS-80 i Krasowskiego/
+        Parameters
+        ----------
+        x_grs, y_grs, z_grs : FLOAT
+            [m] - współrzędne geocentryczne dla elipsoidy GRS-80
+
+        Returns
+        -------
+        x_kra, y_kra, z_kra : TUPLE
+            [m] - współrzędne geocentryczne dla elipsoidy Krasowskiego
+        """
+        R_g = np.array([[x_grs],
+                        [y_grs],
+                        [z_grs]])
+        I = np.eye(3)
+        C = np.array([[0.84076440, 4.08960694, 0.25613907],
+                      [-4.08960650, 0.84076292, -1.73888787],
+                      [-0.25614618, 1.73888628, 0.84077125]]) * 10**(-6)
+        T = np.array([[-33.4297],
+                      [146.5746],
+                      [76.2865]])
+        [[x_kra], [y_kra], [z_kra]] = (I + C) @ R_g + T
+        return x_kra, y_kra, z_kra
+    
+    
+    def xyzKRA2GRS(self, x_kra, y_kra, z_kra):
+        '''
+        Transformacja współrzędnych kartezjańskich - geocentrycznych
+        z wejsciowej elipsoidy Krasowskiego do układu elipsoidy GRS-80
+
+        Parameters
+        ----------
+        x_kra, y_kra, z_kra : FLOAT
+            [m] - współrzędne geocentryczne w układzie elipsoidy Krasowskiego
+
+        Returns
+        -------
+        x_grs, y_grs, z_grs : TUPLE
+            [m] - współrzędne geocentryczne w układzie elipsoidy GRS-80
+        '''
+        R_k = np.array([[x_kra],
+                        [y_kra],
+                        [z_kra]])
+        T = np.array([[-33.4297],
+                      [146.5746],
+                      [76.2865]])
+        I = np.eye(3)
+        D = np.array([[-0.84078048, -4.08959962, -0.25614575],
+                      [4.08960007, -0.84078196, 1.73888389],
+                      [0.25613864, -1.73888494, -0.84077363]]) * 10**(-6)
+        R = R_k - T
+        [[x_grs], [y_grs], [z_grs]] = (I + D) @ R
+        return x_grs, y_grs, z_grs
+    
 
     def plh2xyz(self, phi, lam, h):
         '''
@@ -144,26 +202,23 @@ class Transformacje:
         y1992 : FLOAT
             [m] - rzędna w układzie 1992
         '''
-        if self.a == 6378245.0:
-            raise NotImplementedError("pl21992 method not implemented for Krasowski model")
-        else:
-            phi = radians(phi)
-            lam = radians(lam)
-            b2 = self.a**2 * (1 - self.ecc2)
-            e_prim2 = (self.a**2 - b2) / b2
-            deltal = lam - radians(19)
-            t = tan(phi)
-            eta2 = e_prim2 * (cos(phi)**2) 
-            N = self.a / sqrt(1 - self.ecc2 * sin(phi)**2)
-            A0 = 1 - (self.ecc2 / 4) - ((3 * (self.ecc2**2)) / 64) - ((5 * (self.ecc2**3)) / 256)
-            A2 = (3 / 8) * (self.ecc2 + (self.ecc2**2) / 4 + (15 * (self.ecc2**3)) / 128)
-            A4 = (15 / 256) * (self.ecc2**2 + (3 * (self.ecc2**3)) / 4)
-            A6 = (35 * (self.ecc2**3)) / 3072
-            sigma = self.a * (A0 * phi - A2 * sin(2 * phi) + A4 * sin(4 * phi) - A6 * sin(6*phi))
-            xgk = sigma + ((deltal)**2)/2 * N * sin(phi) * cos(phi) * (1 + ((deltal)**2)/12 * (cos(phi))**2 * (5 - t**2 + 9 * eta2 + 4 * (eta2)**2) + ((deltal)**4)/360 * (cos(phi))**4 * (61 - 58*t**2 + t**4 + 270*eta2 - 330*eta2*t**2))
-            ygk = deltal * N * cos(phi) * (1 + ((deltal)**2)/6 * (cos(phi))**2 * (1 - t**2 + eta2) + ((deltal)**4)/120 * (cos(phi))**4 * (5 - 18 * t**2 + t**4 + 14 * eta2 - 58 * eta2 * t**2))
-            x1992 = xgk * 0.9993 - 5300000
-            y1992 = ygk * 0.9993 + 500000
+        phi = radians(phi)
+        lam = radians(lam)
+        b2 = self.a**2 * (1 - self.ecc2)
+        e_prim2 = (self.a**2 - b2) / b2
+        deltal = lam - radians(19)
+        t = tan(phi)
+        eta2 = e_prim2 * (cos(phi)**2) 
+        N = self.a / sqrt(1 - self.ecc2 * sin(phi)**2)
+        A0 = 1 - (self.ecc2 / 4) - ((3 * (self.ecc2**2)) / 64) - ((5 * (self.ecc2**3)) / 256)
+        A2 = (3 / 8) * (self.ecc2 + (self.ecc2**2) / 4 + (15 * (self.ecc2**3)) / 128)
+        A4 = (15 / 256) * (self.ecc2**2 + (3 * (self.ecc2**3)) / 4)
+        A6 = (35 * (self.ecc2**3)) / 3072
+        sigma = self.a * (A0 * phi - A2 * sin(2 * phi) + A4 * sin(4 * phi) - A6 * sin(6*phi))
+        xgk = sigma + ((deltal)**2)/2 * N * sin(phi) * cos(phi) * (1 + ((deltal)**2)/12 * (cos(phi))**2 * (5 - t**2 + 9 * eta2 + 4 * (eta2)**2) + ((deltal)**4)/360 * (cos(phi))**4 * (61 - 58*t**2 + t**4 + 270*eta2 - 330*eta2*t**2))
+        ygk = deltal * N * cos(phi) * (1 + ((deltal)**2)/6 * (cos(phi))**2 * (1 - t**2 + eta2) + ((deltal)**4)/120 * (cos(phi))**4 * (5 - 18 * t**2 + t**4 + 14 * eta2 - 58 * eta2 * t**2))
+        x1992 = xgk * 0.9993 - 5300000
+        y1992 = ygk * 0.9993 + 500000
         return x1992, y1992
     
     
@@ -187,34 +242,31 @@ class Transformacje:
         y2000 : FLOAT
             [m] - rzędna w układzie 2000
         '''
-        if self.a == 6378245.0:
-            raise NotImplementedError("pl22000 method not implemented for Krasowski model")
+        if lam < 16.5:
+            lam0 = radians(15)
+        elif lam >= 16.5 and lam < 19.5:
+            lam0 = radians(18)
+        elif lam >= 19.5 and lam < 22.5:
+            lam0 = radians(21)
         else:
-            if lam < 16.5:
-                lam0 = radians(15)
-            elif lam >= 16.5 and lam < 19.5:
-                lam0 = radians(18)
-            elif lam >= 19.5 and lam < 22.5:
-                lam0 = radians(21)
-            else:
-                lam0 = radians(24)
-            phi = radians(phi)
-            lam = radians(lam)
-            b2 = self.a**2 * (1 - self.ecc2)
-            e_prim2 = (self.a**2 - b2) / b2
-            deltal = lam - lam0
-            t = tan(phi)
-            eta2 = e_prim2 * (cos(phi)**2) 
-            N = self.a / sqrt(1 - self.ecc2 * sin(phi)**2)
-            A0 = 1 - (self.ecc2 / 4) - ((3 * (self.ecc2**2)) / 64) - ((5 * (self.ecc2**3)) / 256)
-            A2 = (3 / 8) * (self.ecc2 + (self.ecc2**2) / 4 + (15 * (self.ecc2**3)) / 128)
-            A4 = (15 / 256) * (self.ecc2**2 + (3 * (self.ecc2**3)) / 4)
-            A6 = (35 * (self.ecc2**3)) / 3072
-            sigma = self.a * (A0 * phi - A2 * sin(2 * phi) + A4 * sin(4 * phi) - A6 * sin(6*phi))
-            xgk = sigma + ((deltal)**2)/2 * N * sin(phi) * cos(phi) * (1 + ((deltal)**2)/12 * (cos(phi))**2 * (5 - t**2 + 9 * eta2 + 4 * (eta2)**2) + ((deltal)**4)/360 * (cos(phi))**4 * (61 - 58*t**2 + t**4 + 270*eta2 - 330*eta2*t**2))
-            ygk = deltal * N * cos(phi) * (1 + ((deltal)**2)/6 * (cos(phi))**2 * (1 - t**2 + eta2) + ((deltal)**4)/120 * (cos(phi))**4 * (5 - 18 * t**2 + t**4 + 14 * eta2 - 58 * eta2 * t**2))
-            x2000 = xgk * 0.999923
-            y2000 = ygk * 0.999923 + degrees(lam0)/3 * 1000000 + 500000
+            lam0 = radians(24)
+        phi = radians(phi)
+        lam = radians(lam)
+        b2 = self.a**2 * (1 - self.ecc2)
+        e_prim2 = (self.a**2 - b2) / b2
+        deltal = lam - lam0
+        t = tan(phi)
+        eta2 = e_prim2 * (cos(phi)**2) 
+        N = self.a / sqrt(1 - self.ecc2 * sin(phi)**2)
+        A0 = 1 - (self.ecc2 / 4) - ((3 * (self.ecc2**2)) / 64) - ((5 * (self.ecc2**3)) / 256)
+        A2 = (3 / 8) * (self.ecc2 + (self.ecc2**2) / 4 + (15 * (self.ecc2**3)) / 128)
+        A4 = (15 / 256) * (self.ecc2**2 + (3 * (self.ecc2**3)) / 4)
+        A6 = (35 * (self.ecc2**3)) / 3072
+        sigma = self.a * (A0 * phi - A2 * sin(2 * phi) + A4 * sin(4 * phi) - A6 * sin(6*phi))
+        xgk = sigma + ((deltal)**2)/2 * N * sin(phi) * cos(phi) * (1 + ((deltal)**2)/12 * (cos(phi))**2 * (5 - t**2 + 9 * eta2 + 4 * (eta2)**2) + ((deltal)**4)/360 * (cos(phi))**4 * (61 - 58*t**2 + t**4 + 270*eta2 - 330*eta2*t**2))
+        ygk = deltal * N * cos(phi) * (1 + ((deltal)**2)/6 * (cos(phi))**2 * (1 - t**2 + eta2) + ((deltal)**4)/120 * (cos(phi))**4 * (5 - 18 * t**2 + t**4 + 14 * eta2 - 58 * eta2 * t**2))
+        x2000 = xgk * 0.999923
+        y2000 = ygk * 0.999923 + degrees(lam0)/3 * 1000000 + 500000
         return x2000, y2000
     
     
@@ -249,6 +301,7 @@ class Transformacje:
         [[n], [e], [u]] = R.T @ XYZT
         return n, e, u
             
+    
 if __name__ == "__main__":
     # utworzenie obiektu
     geo = Transformacje(model = "wgs84")
@@ -274,7 +327,7 @@ if __name__ == "__main__":
             
     
     if '--flags' in sys.argv:  #displays all callable flags
-        print('\n --xyz2plh \n --plh2xyz \n --pl21992 \n --pl22000 \n --xyz2neu \n --header_lines \n --model') 
+        print('\n --xyz2plh \n --plh2xyz \n --pl21992 \n --pl22000 \n --xyz2neu \n --xyzGRS2KRA \n --xyzKRA2GRS \n --header_lines \n --model') 
             
     
     if '--xyz2plh' in sys.argv and '--plh2xyz' in sys.argv:
@@ -311,6 +364,46 @@ if __name__ == "__main__":
             for coords in coords_plh:
                 coords_plh_line = ','.join([str(coord) for coord in coords])
                 f.write(coords_plh_line + '\n')
+                
+                
+    elif '--xyzGRS2KRA' in sys.argv:
+        with open(input_file_path, 'r') as f:
+            lines = f.readlines()
+            lines = lines[header_lines:]
+        
+            coords_xyz_kra = []
+            for line in lines: 
+                line = line.strip()
+                x_str,y_str,z_str = line.split(',')
+                x_grs,y_grs,z_grs = float(x_str),float(y_str),float(z_str)
+                x_kra,y_kra,z_kra = grs.xyzGRS2KRA(x_grs,y_grs,z_grs)
+                coords_xyz_kra.append([x_kra,y_kra,z_kra])
+    
+        with open('result_xyzGRS2KRA.txt','w+') as f:
+            f.write('x[m], y[m], z[m] \n')
+            for coords in coords_xyz_kra:
+                coords_xyz_kra_line = ','.join([f'{coord:11.3f}' for coord in coords])
+                f.write(coords_xyz_kra_line + '\n')
+    
+   
+    elif '--xyzKRA2GRS' in sys.argv:
+        with open(input_file_path, 'r') as f:
+            lines = f.readlines()
+            lines = lines[header_lines:]
+        
+            coords_xyz_grs = []
+            for line in lines: 
+                line = line.strip()
+                x_str,y_str,z_str = line.split(',')
+                x_kra,y_kra,z_kra = float(x_str),float(y_str),float(z_str)
+                x_grs,y_grs,z_grs = grs.xyzKRA2GRS(x_kra,y_kra,z_kra)
+                coords_xyz_grs.append([x_grs,y_grs,z_grs])
+    
+        with open('result_xyzKRA2GRS.txt','w+') as f:
+            f.write('x[m], y[m], z[m] \n')
+            for coords in coords_xyz_grs:
+                coords_xyz_grs_line = ','.join([f'{coord:11.3f}' for coord in coords])
+                f.write(coords_xyz_grs_line + '\n')
             
             
     elif '--plh2xyz' in sys.argv: 
@@ -360,19 +453,25 @@ if __name__ == "__main__":
         for line in lines: 
             line = line.strip().replace(" ", "")
             if input_format == 'dec_degrees':
-                phi_str, lam_str = line.split(',')
-                phi, lam = float(phi_str), float(lam_str)
+                phi_str, lam_str, h_str = line.split(',')
+                phi, lam, h = float(phi_str), float(lam_str), float(h_str)
             elif input_format == 'dms':
-                phi_dms, lam_dms = line.split(',')
+                phi_dms, lam_dms, h = line.split(',')
                 phi_d, phi_m, phi_s = float(phi_dms[:2]), float(phi_dms[3:5]), float(phi_dms[6:-1])
                 lam_d, lam_m, lam_s = float(lam_dms[:2]), float(lam_dms[3:5]), float(lam_dms[6:-1])
                 phi = phi_d + phi_m/60 + phi_s/3600
                 lam = lam_d + lam_m/60 + lam_s/3600
+                h = float(h)
             else:
-                print("Invalid input format. Input format must be dec_degrees or dms.")
+                raise NotImplementedError(f'Invalid input format. Input format must be dec_degrees or dms.')
             if model_elip == 'wgs84':
                 x, y = geo.pl21992(phi, lam)
             elif model_elip == 'grs80':
+                x, y = grs.pl21992(phi, lam)
+            elif model_elip == 'krasowski':
+                x_kra, y_kra, z_kra = kras.plh2xyz(phi, lam, h)
+                x_grs, y_grs, z_grs = kras.xyzKRA2GRS(x_kra, y_kra, z_kra)
+                phi, lam, h = grs.xyz2plh(x_grs, y_grs, z_grs)
                 x, y = grs.pl21992(phi, lam)
             coords_1992.append([x,y])
         
@@ -393,19 +492,25 @@ if __name__ == "__main__":
         for line in lines: 
             line = line.strip().replace(" ", "")
             if input_format == 'dec_degrees':
-                phi_str, lam_str = line.split(',')
-                phi, lam = float(phi_str), float(lam_str)
+                phi_str, lam_str, h_str = line.split(',')
+                phi, lam = float(phi_str), float(lam_str), float(h_str)
             elif input_format == 'dms':
-                phi_dms, lam_dms = line.split(',')
+                phi_dms, lam_dms, h = line.split(',')
                 phi_d, phi_m, phi_s = float(phi_dms[:2]), float(phi_dms[3:5]), float(phi_dms[6:-1])
                 lam_d, lam_m, lam_s = float(lam_dms[:2]), float(lam_dms[3:5]), float(lam_dms[6:-1])
                 phi = phi_d + phi_m/60 + phi_s/3600
                 lam = lam_d + lam_m/60 + lam_s/3600
+                h = float(h)
             else:
-                print("Invalid input format. Input format must be dec_degrees or dms.")
+                raise NotImplementedError(f'Invalid input format. Input format must be dec_degrees or dms.')
             if model_elip == 'wgs84':
                 x, y = geo.pl22000(phi, lam)
             elif model_elip == 'grs80':
+                x, y = grs.pl22000(phi, lam)
+            elif model_elip == 'krasowski':
+                x_kra, y_kra, z_kra = kras.plh2xyz(phi, lam, h)
+                x_grs, y_grs, z_grs = kras.xyzKRA2GRS(x_kra, y_kra, z_kra)
+                phi, lam, h = grs.xyz2plh(x_grs, y_grs, z_grs)
                 x, y = grs.pl22000(phi, lam)
             coords_2000.append([x,y])
         
