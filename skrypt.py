@@ -91,7 +91,7 @@ class Transformacje:
             lat = self.deg2dms(degrees(lat))
             lon = self.deg2dms(degrees(lon))
             # return f"{lat[0]:02d}:{lat[1]:02d}:{lat[2]:.2f}", f"{lon[0]:02d}:{lon[1]:02d}:{lon[2]:.2f}", f"{h:.3f}"
-            return f'{lat[0]:3d}{chr(176)}{abs(lat[1]):02d}\'{abs(lat[2]):.2f}\"', f'{lon[0]:3d}{chr(176)}{abs(lon[1]):02d}\'{abs(lon[2]):.2f}\"', f"{h:.3f}"
+            return f'{lat[0]:02d}{chr(176)}{abs(lat[1]):02d}\'{abs(lat[2]):.2f}\"', f'{lon[0]:02d}{chr(176)}{abs(lon[1]):02d}\'{abs(lon[2]):.2f}\"', f"{h:.3f}"
         else:
             raise NotImplementedError(f"{output} - output format not defined")
             
