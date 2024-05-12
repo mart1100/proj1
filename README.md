@@ -42,6 +42,7 @@ Lista wywoływalnych flag oferowanych przez program:
 * --xyz2neu : Uruchamia funkcję `xyz2neu`
 * --header_lines : Umożliwia pominięcie podanej liczby wierszy nagłówka przy odczytywaniu pliku wejściowego. 
 * --model : Umożliwia określenie modelu elipsoidy odniesienia współrzędnych wyjściowych.
+* --dms : Przy użyciu z flagą --xyz2plh zwraca wynik w formacie stopnie,minuty,sekundy
 
 
 ## Uruchomienie programu
@@ -72,7 +73,7 @@ python skrypt.py --xyz2plh --header_lines 4 --model wgs84 wsp_inp.txt
 W ten sposób w miejscu, w którym zapisany jest plik skrypt.py powstaje plik tekstowy zawierający wyniki tej operacji: result_xyz2plh.txt <br/>
 W przypadku, gdy współrzędne w pliku wyjściowym mają być podane w stopniach, minutach, sekundach należy użyć komendy `dms`:
 ```
-python skrypt.py --xyz2plh --header_lines 4 --model wgs84 dms wsp_inp.txt
+python skrypt.py --xyz2plh --header_lines 4 --model wgs84 --dms wsp_inp.txt
 ```
 
 **2. Przeliczenie współrzędnych geodezyjnych do układu PL1992.** <br/>
