@@ -346,8 +346,8 @@ if __name__ == "__main__":
         coords_1992 = []
         for line in lines: 
             line = line.strip()
-            phi_str,lam_str,h_str = line.split(',')
-            phi, lam,h = float(phi_str),float(lam_str),float(h_str)
+            phi_str,lam_str = line.split(',')
+            phi, lam = float(phi_str),float(lam_str)
             if model_elip == 'wgs84':
                 x, y = geo.pl21992(phi, lam)
             elif model_elip == 'grs80':
@@ -357,7 +357,7 @@ if __name__ == "__main__":
         with open('result_pl21992.txt','w+') as f:
             f. write('x[m], y[m] \n')
             for coords in coords_1992:
-                coords_1992_line = ','.join([f'{coord:11.3f}' for coord in coords])
+                coords_1992_line = ','.join([f'{coord:.3f}' for coord in coords])
                 f.write(coords_1992_line + '\n')
                 
 
@@ -369,8 +369,8 @@ if __name__ == "__main__":
         coords_2000 = []
         for line in lines: 
             line = line.strip()
-            phi_str,lam_str,h_str = line.split(',')
-            phi, lam,h = float(phi_str),float(lam_str),float(h_str)
+            phi_str,lam_str = line.split(',')
+            phi, lam = float(phi_str),float(lam_str)
             if model_elip == 'wgs84':
                 x, y = geo.pl22000(phi, lam)
             elif model_elip == 'grs80':
