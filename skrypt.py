@@ -90,8 +90,8 @@ class Transformacje:
         elif output == "dms":
             lat = self.deg2dms(degrees(lat))
             lon = self.deg2dms(degrees(lon))
-            # return f"{lat[0]:02d}:{lat[1]:02d}:{lat[2]:.2f}", f"{lon[0]:02d}:{lon[1]:02d}:{lon[2]:.2f}", f"{h:.3f}"
-            return f'{lat[0]:02d}{chr(176)}{abs(lat[1]):02d}\'{abs(lat[2]):.2f}\"', f'{lon[0]:02d}{chr(176)}{abs(lon[1]):02d}\'{abs(lon[2]):.2f}\"', f"{h:.3f}"
+            return f"{lat[0]:02d}:{lat[1]:02d}:{lat[2]:.2f}", f"{lon[0]:02d}:{lon[1]:02d}:{lon[2]:.2f}", f"{h:.3f}"
+            #return f'{lat[0]:02d}{chr(176)}{abs(lat[1]):02d}\'{abs(lat[2]):.2f}\"', f'{lon[0]:02d}{chr(176)}{abs(lon[1]):02d}\'{abs(lon[2]):.2f}\"', f"{h:.3f}"
         else:
             raise NotImplementedError(f"{output} - output format not defined")
             
@@ -290,7 +290,7 @@ if __name__ == "__main__":
                 line = line.strip()
                 x_str,y_str,z_str = line.split(',')
                 x,y,z = float(x_str),float(y_str),float(z_str)
-                if 'dms' in sys.argv:
+                if '--dms' in sys.argv:
                     if model_elip == 'wgs84':
                         p,l,h = geo.xyz2plh(x,y,z, output = 'dms')
                     elif model_elip == 'grs80':
@@ -313,24 +313,36 @@ if __name__ == "__main__":
                 f.write(coords_plh_line + '\n')
             
             
-    elif '--plh2xyz' in sys.argv:  
+    elif '--plh2xyz' in sys.argv: 
+        input_format = input("Enter input format (dec_degrees/dms): ")
             
         with open(input_file_path, 'r') as f:
             lines = f.readlines()
             lines = lines[header_lines:]
             
-        coords_xyz = []
-        for line in lines: 
-            line = line.strip()
-            phi_str,lam_str,h_str = line.split(',')
-            phi, lam, h = float(phi_str),float(lam_str),float(h_str)
-            if model_elip == 'wgs84':
-                x, y, z = geo.plh2xyz(phi,lam,h)
-            elif model_elip == 'grs80':
-                x, y, z = grs.plh2xyz(phi,lam,h)
-            elif model_elip == 'krasowski':
-                x, y, z = kras.plh2xyz(phi,lam,h)
-            coords_xyz.append([x,y,z])
+            coords_xyz = []
+            for line in lines: 
+                line = line.strip().replace(" ", "")
+                if input_format == 'dec_degrees':
+                    phi_str, lam_str, h_str = line.split(',')
+                    phi, lam, h = float(phi_str), float(lam_str), float(h_str)
+                elif input_format == 'dms':
+                    phi_dms, lam_dms, h = line.split(',')
+                    print(phi_dms, lam_dms)
+                    phi_d, phi_m, phi_s = float(phi_dms[:2]), float(phi_dms[3:5]), float(phi_dms[6:-1])
+                    lam_d, lam_m, lam_s = float(lam_dms[:2]), float(lam_dms[3:5]), float(lam_dms[6:-1])
+                    phi = phi_d + phi_m/60 + phi_s/3600
+                    lam = lam_d + lam_m/60 + lam_s/3600
+                    h = float(h)
+                else:
+                    print("Invalid input format. Input format must be dec_degrees or dms.")
+                if model_elip == 'wgs84':
+                    x, y, z = geo.plh2xyz(phi,lam,h)
+                elif model_elip == 'grs80':
+                    x, y, z = grs.plh2xyz(phi,lam,h)
+                elif model_elip == 'krasowski':
+                    x, y, z = kras.plh2xyz(phi,lam,h)
+                coords_xyz.append([x,y,z])
     
         with open('result_plh2xyz.txt','w+') as f:
             f. write('x[m], y[m], z[m] \n')
@@ -339,15 +351,25 @@ if __name__ == "__main__":
                 f.write(coords_xyz_line + '\n')
 
     elif '--pl21992' in sys.argv:
+        input_format = input("Enter input format (dec_degrees/dms): ")
         with open(input_file_path, 'r') as f:
         	lines = f.readlines()
         	lines = lines[header_lines:]
             
         coords_1992 = []
         for line in lines: 
-            line = line.strip()
-            phi_str,lam_str = line.split(',')
-            phi, lam = float(phi_str),float(lam_str)
+            line = line.strip().replace(" ", "")
+            if input_format == 'dec_degrees':
+                phi_str, lam_str = line.split(',')
+                phi, lam = float(phi_str), float(lam_str)
+            elif input_format == 'dms':
+                phi_dms, lam_dms = line.split(',')
+                phi_d, phi_m, phi_s = float(phi_dms[:2]), float(phi_dms[3:5]), float(phi_dms[6:-1])
+                lam_d, lam_m, lam_s = float(lam_dms[:2]), float(lam_dms[3:5]), float(lam_dms[6:-1])
+                phi = phi_d + phi_m/60 + phi_s/3600
+                lam = lam_d + lam_m/60 + lam_s/3600
+            else:
+                print("Invalid input format. Input format must be dec_degrees or dms.")
             if model_elip == 'wgs84':
                 x, y = geo.pl21992(phi, lam)
             elif model_elip == 'grs80':
@@ -362,15 +384,25 @@ if __name__ == "__main__":
                 
 
     elif '--pl22000' in sys.argv:
+        input_format = input("Enter input format (dec_degrees/dms): ")
         with open(input_file_path, 'r') as f:
         	lines = f.readlines()
         	lines = lines[header_lines:]
             
         coords_2000 = []
         for line in lines: 
-            line = line.strip()
-            phi_str,lam_str = line.split(',')
-            phi, lam = float(phi_str),float(lam_str)
+            line = line.strip().replace(" ", "")
+            if input_format == 'dec_degrees':
+                phi_str, lam_str = line.split(',')
+                phi, lam = float(phi_str), float(lam_str)
+            elif input_format == 'dms':
+                phi_dms, lam_dms = line.split(',')
+                phi_d, phi_m, phi_s = float(phi_dms[:2]), float(phi_dms[3:5]), float(phi_dms[6:-1])
+                lam_d, lam_m, lam_s = float(lam_dms[:2]), float(lam_dms[3:5]), float(lam_dms[6:-1])
+                phi = phi_d + phi_m/60 + phi_s/3600
+                lam = lam_d + lam_m/60 + lam_s/3600
+            else:
+                print("Invalid input format. Input format must be dec_degrees or dms.")
             if model_elip == 'wgs84':
                 x, y = geo.pl22000(phi, lam)
             elif model_elip == 'grs80':
