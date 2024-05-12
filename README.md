@@ -45,7 +45,7 @@ Lista wywoływalnych flag oferowanych przez program:
 
 
 ## Uruchomienie programu
-Program należy uruchomić za pomocą Command Prompt, Microsoft PowerShell lub Terminal wpisując w wiersz poleceń komendę:
+Program należy uruchomić za pomocą Command Prompt, Microsoft PowerShell lub Terminal. W Command Center można to zrobić wpisując w wiersz poleceń komendę:
 ```
 python skrypt.py --[funkcja] --header_lines [liczba_wierszy_naglowka] --model [model_elipsoidy] wsp_inp.txt
 ```
