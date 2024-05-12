@@ -53,7 +53,7 @@ python skrypt.py --[funkcja] --header_lines [liczba_wierszy_naglowka] --model [m
 gdzie w miejscu flagi --[funkcja] należy wpisać jedną z interesujących nas funkcji programu, a plik tekstowy wsp_inp.txt zawiera nasze współrzędne w postaci (X,Y,Z), (X,Y) lub (&phi;,&lambda;,h) oddzielone przecinkiem.
 W miejscu [liczba_wierszy_naglowka] należy wpisać liczbę wierszy nagłówka w pliku wsp_inp.txt. W miejscu [model_elipsoidy] powinien znaleźć się model elipsoidy odniesienia współrzędnych wyjściowych.
 > [!IMPORTANT]
- >Kolejność wpisywania flag ma znaczenie - powinna być tylko taka jak w powyższym przykładzie.
+ >Kolejność wpisywania flag ma znaczenie - żeby program działał poprawnie kolejność flag powinna być tylko taka jak w podanych przykładach.
 
 ## Przykłady użycia
 **1. Przeliczanie współrzędnych ortokartezjańskich na współrzędne geodezyjne.** <br/>
@@ -69,7 +69,7 @@ Dla przykładowego pliku wejściowego ze współrzędnymi geocentrycznymi 'wsp_i
 python skrypt.py --xyz2plh --header_lines 4 --model wgs84 wsp_inp.txt
 ```
 
-W ten sposób w miejscu, w którym zapisany jest plik skrypt.py powstaje plik tekstowy zawierający wyniki tej operacji: result_xyz2plh.txt
+W ten sposób w miejscu, w którym zapisany jest plik skrypt.py powstaje plik tekstowy zawierający wyniki tej operacji: result_xyz2plh.txt <br/>
 W przypadku, gdy współrzędne w pliku wyjściowym mają być podane w stopniach, minutach, sekundach należy użyć komendy `dms`:
 ```
 python skrypt.py --xyz2plh --header_lines 4 --model wgs84 dms wsp_inp.txt
@@ -84,12 +84,26 @@ Parametrami wyjściowymi są:
 * x1992 : FLOAT, [m] - odcięta w układzie 1992
 * y1992 : FLOAT, [m] - rzędna w układzie 1992
 
-Dla przykładowego pliku wejściowego ze współrzędnymi geocentrycznymi 'wsp_inp.txt' w wierszu poleceń należy wpisać komendę:
+Dla przykładowego pliku wejściowego ze współrzędnymi geodezyjnymi w ukladzie wgs84 'wsp_pl_inp.txt' w wierszu poleceń należy wpisać komendę:
 ```
-python skrypt.py --pl21992 --header_lines 4 --model wgs84 wsp_inp.txt
+python skrypt.py --pl21992 --header_lines 1 --model wgs84 wsp_pl_inp.txt
 ```
 
 W ten sposób powstaje plik tekstowy zawierający wyniki tej operacji: result_pl21992.txt
+
+**3. Przeliczenie współrzędnych geodezyjnych do układu NEU.** <br/>
+Parametrami wejściowymi są:
+* x, y, z : FLOAT, [m] - współrzędne geocentryczne 
+* x0, y0, z0 : FLOAT, [m] - współrzędne geocentryczne nowego srodka układu
+  
+Współrzędnymi wyjściowymi są:
+* n, e, u : TUPLE, [m] - współrzędne topocentryczne
+
+Dla przykładowego pliku wejściowego ze współrzędnymi geocentrycznymi 'wsp_inp.txt' oraz x0 = 3664945.620, y0 = 1409150.120, z0 = 5009524.552 w wierszu poleceń należy wpisać komendę:
+```
+python skrypt.py --xyz2neu --header_lines 4 --model wgs84 3664945.620 1409150.120 5009524.552 wsp_inp.txt
+```
+W ten sposób powstaje plik tekstowy zawierający wyniki tej operacji: result_xyz2neu.txt
 
 ## Znane błędy
 
