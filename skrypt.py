@@ -493,7 +493,7 @@ if __name__ == "__main__":
             line = line.strip().replace(" ", "")
             if input_format == 'dec_degrees':
                 phi_str, lam_str, h_str = line.split(',')
-                phi, lam = float(phi_str), float(lam_str), float(h_str)
+                phi, lam, h = float(phi_str), float(lam_str), float(h_str)
             elif input_format == 'dms':
                 phi_dms, lam_dms, h = line.split(',')
                 phi_d, phi_m, phi_s = float(phi_dms[:2]), float(phi_dms[3:5]), float(phi_dms[6:-1])
