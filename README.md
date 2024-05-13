@@ -86,9 +86,9 @@ Parametrami wyjściowymi są:
 * x1992 : FLOAT, [m] - odcięta w układzie 1992
 * y1992 : FLOAT, [m] - rzędna w układzie 1992
 
-Dla przykładowego pliku wejściowego ze współrzędnymi geodezyjnymi w układzie wgs84 'wsp_pl_inp.txt' w wierszu poleceń należy wpisać komendę:
+Dla przykładowego pliku wejściowego ze współrzędnymi geodezyjnymi w układzie wgs84 'wsp_plh_inp.txt' w wierszu poleceń należy wpisać komendę:
 ```
-python skrypt.py --pl21992 --header_lines 1 --model wgs84 wsp_pl_inp.txt
+python skrypt.py --pl21992 --header_lines 1 --model wgs84 wsp_plh_inp.txt
 ```
 
 W ten sposób powstaje plik tekstowy zawierający wyniki tej operacji: result_pl21992.txt
