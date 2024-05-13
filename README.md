@@ -52,7 +52,7 @@ python skrypt.py --[funkcja] --header_lines [liczba_wierszy_naglowka] --model [m
 ```
 
 gdzie w miejscu flagi --[funkcja] należy wpisać jedną z interesujących nas funkcji programu, a plik tekstowy wsp_inp.txt zawiera nasze współrzędne w postaci (X,Y,Z), (X,Y) lub (&phi;,&lambda;,h) oddzielone przecinkiem.
-W miejscu [liczba_wierszy_naglowka] należy wpisać liczbę wierszy nagłówka w pliku wsp_inp.txt. W miejscu [model_elipsoidy] powinien znaleźć się model elipsoidy odniesienia współrzędnych wyjściowych.
+W miejscu [liczba_wierszy_naglowka] należy wpisać liczbę wierszy nagłówka w pliku wsp_inp.txt. W miejscu [model_elipsoidy] powinien znaleźć się model elipsoidy odniesienia współrzędnych wyjściowych: wgs84, grs80 lub krasowski.
 > [!IMPORTANT]
  >Kolejność wpisywania flag ma znaczenie - żeby program działał poprawnie kolejność flag powinna być tylko taka jak w podanych przykładach.
 
