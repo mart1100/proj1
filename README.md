@@ -79,18 +79,22 @@ python skrypt.py --xyz2plh --header_lines 4 --model wgs84 --dms wsp_inp.txt
 **2. Przeliczenie współrzędnych geodezyjnych do układu PL1992.** <br/>
 Parametrami wejściowymi są:
 * phi: FLOAT, [stopnie dziesiętne] - szerokosć geodezyjna
-* lam: FLOAT, [stopnie dziesiętne] - długosć geodezyjna 
+* lam: FLOAT, [stopnie dziesiętne] - długosć geodezyjna
+* h: FLOAT, [m] - wysokość elipsoidalna
 
 Parametrami wyjściowymi są:
 * x1992 : FLOAT, [m] - odcięta w układzie 1992
 * y1992 : FLOAT, [m] - rzędna w układzie 1992
 
-Dla przykładowego pliku wejściowego ze współrzędnymi geodezyjnymi w ukladzie wgs84 'wsp_pl_inp.txt' w wierszu poleceń należy wpisać komendę:
+Dla przykładowego pliku wejściowego ze współrzędnymi geodezyjnymi w układzie wgs84 'wsp_pl_inp.txt' w wierszu poleceń należy wpisać komendę:
 ```
 python skrypt.py --pl21992 --header_lines 1 --model wgs84 wsp_pl_inp.txt
 ```
 
 W ten sposób powstaje plik tekstowy zawierający wyniki tej operacji: result_pl21992.txt
+
+> [!NOTE]  
+ > Jeśli wysokość elipsoidalna punktów h nie jest znana, należy w jej miejsce wpisać 0 w tekstowym pliku wejściowym.
 
 **3. Przeliczenie współrzędnych geodezyjnych do układu NEU.** <br/>
 Parametrami wejściowymi są:
