@@ -41,7 +41,7 @@ Lista wywoływalnych flag oferowanych przez program:
 * --pl22000 : Uruchamia funkcję `pl22000`
 * --xyz2neu : Uruchamia funkcję `xyz2neu`
 * --header_lines : Umożliwia pominięcie podanej liczby wierszy nagłówka przy odczytywaniu pliku wejściowego. 
-* --model : Umożliwia określenie modelu elipsoidy odniesienia współrzędnych wyjściowych.
+* --model : Umożliwia określenie modelu elipsoidy odniesienia współrzędnych wyjściowych. Program obsługuje elipsoidy WGS84, GRS80 oraz Krasowskiego.
 * --dms : Przy użyciu z flagą --xyz2plh zwraca wynik w formacie stopnie,minuty,sekundy
 
 
