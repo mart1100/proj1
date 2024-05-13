@@ -24,8 +24,10 @@ Wymagania, które musi spełnić komputer użytkownika:
 Lista funkcji, które oferuje program:
 * `xyz2plh` : Wykorzystując algorytm Hirvonena, przelicza współrzędne ortokartezjańskie (x, y, z) na współrzędne geodezyjne (&phi;,&lambda;,h).
 * `plh2xyz` : Przelicza współrzędne geodezyjne (phi, lambda, h) na współrzędne ortokartezjańskie (x, y, z).
-* `pl21992` : Przelicza współrzędne geodezyjne (phi, lambda) do układu 1992.
-* `pl22000` : Przelicza współrzędne geodezyjne (phi, lambda) do układu 2000.
+* `xyzGRS2KRA` : Transformuje współrzędne kartezjańskie - geocentryczne z elipsoidy GRS-80 do układu elipsoidy Krasowskiego
+* `xyzKRA2GRS` : Transformuje współrzędne kartezjańskie - geocentryczne z wejściowej elipsoidy Krasowskiego do układu elipsoidy GRS-80
+* `pl21992` : Przelicza współrzędne geodezyjne (&phi;,&lambda;,h) do układu 1992.
+* `pl22000` : Przelicza współrzędne geodezyjne (&phi;,&lambda;,h) do układu 2000.
 * `xyz2neu` : Transformuje współrzędne geocentryczne do układu topocentrycznego.
 
 <!-- Ewentualnie zamiast ##Flagi mozna dac:
@@ -37,6 +39,8 @@ Lista wywoływalnych flag oferowanych przez program:
 * --flags : Wyświetla wszystkie dostępne flagi
 * --xyz2plh : Uruchamia funkcję `xyz2plh`
 * --plh2xyz : Uruchamia funkcję `plh2xyz`
+* --xyzGRS2KRA : Uruchamia funkcję `xyzGRS2KRA`
+* --xyzKRA2GRS : Uruchamia funkcję `xyzKRA2GRS`
 * --pl21992 : Uruchamia funkcję `pl21992`
 * --pl22000 : Uruchamia funkcję `pl22000`
 * --xyz2neu : Uruchamia funkcję `xyz2neu`
@@ -90,11 +94,12 @@ Dla przykładowego pliku wejściowego ze współrzędnymi geodezyjnymi w układz
 ```
 python skrypt.py --pl21992 --header_lines 1 --model wgs84 wsp_plh_inp.txt
 ```
+Następnie należy poprzez wpisanie w konsolę wybrać format współrzędnych w pliku wejściowym: `dec_degrees` dla stopni dziesiętnych, `dms` dla stopni,minut,sekund.
 
 W ten sposób powstaje plik tekstowy zawierający wyniki tej operacji: result_pl21992.txt
 
-> [!NOTE]  
- > Jeśli wysokość elipsoidalna punktów h nie jest znana, należy w jej miejsce wpisać 0 w tekstowym pliku wejściowym.
+> [!IMPORTANT]  
+ > Zarówno w funkcji pl21992 jak i w pl22000 jeśli wysokość elipsoidalna punktów h nie jest znana, należy w jej miejsce wpisać 0 w tekstowym pliku wejściowym.
 
 **3. Przeliczenie współrzędnych geodezyjnych do układu NEU.** <br/>
 Parametrami wejściowymi są:
@@ -111,5 +116,6 @@ python skrypt.py --xyz2neu --header_lines 4 --model wgs84 3664945.620 1409150.12
 W ten sposób powstaje plik tekstowy zawierający wyniki tej operacji: result_xyz2neu.txt
 
 ## Znane błędy
+W przypadku wywołania funkcji pl21992 i pl22000 i wybrania opcji `dms` program akceptuje jedynie pliki wejściowe z danymi z dokładnością do 0.01".
 
 W dokumentacji programu niemożliwe jest używanie polskiego znaku 'ś'.
