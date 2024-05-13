@@ -15,7 +15,7 @@ Projekt powstał w celu utrwalenia informacji zdobytych na zajęciach z Informat
 
 ## Wymagania sprzętowe
 Wymagania, które musi spełnić komputer użytkownika:
-1. Posiadanie wersji programu Python 3.10 lub wyższej.
+1. Posiadanie wersji programu [Python 3.8 lub wyższej](https://www.python.org/downloads/).
 2. Zainstalowane biblioteki sys, math oraz numpy
 3. Dane wejściowe muszą być zapisane w pliku tekstowym.
 4. Posiadanie systemu operacyjnego Windows, MacOS lub Linux.
