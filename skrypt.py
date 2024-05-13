@@ -421,11 +421,10 @@ if __name__ == "__main__":
                     phi, lam, h = float(phi_str), float(lam_str), float(h_str)
                 elif input_format == 'dms':
                     phi_dms, lam_dms, h = line.split(',')
-                    print(phi_dms, lam_dms)
-                    phi_d, phi_m, phi_s = float(phi_dms[:2]), float(phi_dms[3:5]), float(phi_dms[6:-1])
-                    lam_d, lam_m, lam_s = float(lam_dms[:2]), float(lam_dms[3:5]), float(lam_dms[6:-1])
-                    phi = phi_d + phi_m/60 + phi_s/3600
-                    lam = lam_d + lam_m/60 + lam_s/3600
+                    phi_l = phi_dms.split(':')
+                    lam_l = lam_dms.split(":")
+                    phi = float(phi_l[0]) + float(phi_l[1])/60 + float(phi_l[2])/3600
+                    lam = float(lam_l[0]) + float(lam_l[1])/60 + float(lam_l[2])/3600
                     h = float(h)
                 else:
                     print("Invalid input format. Input format must be dec_degrees or dms.")
@@ -457,10 +456,10 @@ if __name__ == "__main__":
                 phi, lam, h = float(phi_str), float(lam_str), float(h_str)
             elif input_format == 'dms':
                 phi_dms, lam_dms, h = line.split(',')
-                phi_d, phi_m, phi_s = float(phi_dms[:2]), float(phi_dms[3:5]), float(phi_dms[6:-1])
-                lam_d, lam_m, lam_s = float(lam_dms[:2]), float(lam_dms[3:5]), float(lam_dms[6:-1])
-                phi = phi_d + phi_m/60 + phi_s/3600
-                lam = lam_d + lam_m/60 + lam_s/3600
+                phi_l = phi_dms.split(':')
+                lam_l = lam_dms.split(":")
+                phi = float(phi_l[0]) + float(phi_l[1])/60 + float(phi_l[2])/3600
+                lam = float(lam_l[0]) + float(lam_l[1])/60 + float(lam_l[2])/3600
                 h = float(h)
             else:
                 raise NotImplementedError(f'Invalid input format. Input format must be dec_degrees or dms.')
@@ -496,10 +495,10 @@ if __name__ == "__main__":
                 phi, lam, h = float(phi_str), float(lam_str), float(h_str)
             elif input_format == 'dms':
                 phi_dms, lam_dms, h = line.split(',')
-                phi_d, phi_m, phi_s = float(phi_dms[:2]), float(phi_dms[3:5]), float(phi_dms[6:-1])
-                lam_d, lam_m, lam_s = float(lam_dms[:2]), float(lam_dms[3:5]), float(lam_dms[6:-1])
-                phi = phi_d + phi_m/60 + phi_s/3600
-                lam = lam_d + lam_m/60 + lam_s/3600
+                phi_l = phi_dms.split(':')
+                lam_l = lam_dms.split(":")
+                phi = float(phi_l[0]) + float(phi_l[1])/60 + float(phi_l[2])/3600
+                lam = float(lam_l[0]) + float(lam_l[1])/60 + float(lam_l[2])/3600
                 h = float(h)
             else:
                 raise NotImplementedError(f'Invalid input format. Input format must be dec_degrees or dms.')
