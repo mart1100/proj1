@@ -549,5 +549,5 @@ if __name__ == "__main__":
         with open('result_xyz2neu.txt', 'w+') as f:
             f.write('n[m], e[m], u[m] \n')
             for coords in coords_neu:
-                coords_neu_line = ','.join([f'{coord:11.3f}' for coord in coords])
+                coords_neu_line = ','.join([f'{coord:.3f}' for coord in coords])
                 f.write(coords_neu_line + '\n')
