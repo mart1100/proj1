@@ -75,7 +75,7 @@ python skrypt.py --xyz2plh --header_lines 4 --model wgs84 wsp_inp.txt
 ```
 
 W ten sposób w miejscu, w którym zapisany jest plik skrypt.py powstaje plik tekstowy zawierający wyniki tej operacji: result_xyz2plh.txt <br/>
-W przypadku, gdy współrzędne w pliku wyjściowym mają być podane w stopniach, minutach, sekundach należy użyć komendy `dms`:
+W przypadku, gdy współrzędne w pliku wyjściowym mają być podane w stopniach, minutach, sekundach należy użyć flagi `--dms`:
 ```
 python skrypt.py --xyz2plh --header_lines 4 --model wgs84 --dms wsp_inp.txt
 ```
