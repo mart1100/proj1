@@ -451,7 +451,7 @@ if __name__ == "__main__":
             
         coords_1992 = []
         for line in lines: 
-            line = line.strip().replace(" ", "")
+            line = line.strip()
             if input_format == 'dec_degrees':
                 phi_str, lam_str, h_str = line.split(',')
                 phi, lam, h = float(phi_str), float(lam_str), float(h_str)
@@ -490,7 +490,7 @@ if __name__ == "__main__":
             
         coords_2000 = []
         for line in lines: 
-            line = line.strip().replace(" ", "")
+            line = line.strip()
             if input_format == 'dec_degrees':
                 phi_str, lam_str, h_str = line.split(',')
                 phi, lam, h = float(phi_str), float(lam_str), float(h_str)
