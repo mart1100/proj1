@@ -327,7 +327,7 @@ if __name__ == "__main__":
             
     
     if '--flags' in sys.argv:  #displays all callable flags
-        print('\n --xyz2plh \n --plh2xyz \n --pl21992 \n --pl22000 \n --xyz2neu \n --xyzGRS2KRA \n --xyzKRA2GRS \n --header_lines \n --model') 
+        print('\n --xyz2plh \n --plh2xyz \n --pl21992 \n --pl22000 \n --xyz2neu \n --xyzGRS2KRA \n --xyzKRA2GRS \n --header_lines \n --model \n --dms') 
             
     
     if '--xyz2plh' in sys.argv and '--plh2xyz' in sys.argv:
