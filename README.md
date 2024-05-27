@@ -5,6 +5,7 @@
 * [Wymagania sprzętowe](#wymagania-sprzętowe)
 * [Funkcje](#funkcje)
 * [Flagi](#flagi)
+* [Struktura plików wejściowych](#struktura-plików-wejściowych)
 * [Uruchomienie programu](#uruchomienie-programu)
 * [Przykłady użycia](#przykłady-użycia)
 * [Znane błędy](#znane-błędy)
@@ -44,6 +45,30 @@ Lista wywoływalnych flag oferowanych przez program:
 * --model : Umożliwia określenie modelu elipsoidy odniesienia współrzędnych wyjściowych. Program obsługuje elipsoidy WGS84, GRS80 oraz Krasowskiego.
 * --dms : Przy użyciu z flagą --xyz2plh zwraca wynik w formacie stopnie,minuty,sekundy
 
+## Struktura plików wejściowych
+Współrzędne jednego punktu powinny być zapisane w jednej linii, gdzie poszczególne z nich powinny być rozdzielone znakiem przecinka `,`. Linia nie może zawierać białych znaków. Nie ma konieczności dodawania nagłówków opisujących zawartość kolumn pliku, jednak jeśli taki występuje, nie wpływa on na funkcjonowanie programu. Należy wpisać za pomocą obowiązkowej flagi `--header_lines` ilość linii nagłówka. Jeśli takowy nie występuje - wpisać cyfrę 0 dla flagi.
+* Dane (&phi;,&lambda;,h)
+  
+  * W formacie dms (degrees, minutes, seconds)
+  
+    Dla &phi; i &lambda; wartości stopnia, minuty i sekundy należy rozdzielić znakiem `:`
+    ```
+    phi[deg], lam[deg], h[m] 
+    52:05:50.18,21:01:53.52,141.399
+    52:05:50.18,21:01:53.52,141.411
+    ```
+  * W formacie stopni dziesiętnych.
+    ```
+    phi[deg], lam[deg], h[m] 
+    50.28985,15.51426,358.10958
+    50.93686,23.71098,271.79672
+    ```
+* Dane (xyz)
+  ```
+  x[m], y[m], z[m] 
+  3664940.500,1409153.590,5009571.171
+  3664940.505,1409153.592,5009571.178
+  ```
 
 ## Uruchomienie programu
 Program należy uruchomić za pomocą Command Prompt, Microsoft PowerShell lub Terminal. W Command Center można to zrobić wpisując w wiersz poleceń komendę:
